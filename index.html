@@ -243,7 +243,7 @@
                 // Sử dụng fetch API để gửi dữ liệu
                 const response = await fetch(GOOGLE_APP_SCRIPT_WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Cần thiết cho Google Apps Script nếu không cấu hình CORS
+                    // mode: 'no-cors', // Cần thiết cho Google Apps Script nếu không cấu hình CORS
                     headers: {
                         'Content-Type': 'application/json',
                     },
