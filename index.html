@@ -1,88 +1,172 @@
 <!DOCTYPE html>
+
 <html lang="vi">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Cà Menu & Order</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; color: #5C6BC0; }
 
-        /* Style cho phần menu ảnh */
-        .menu-image-section {
-            position: relative;
-            width: 100%;
-            padding-bottom: 70.7%; /* Tỷ lệ 1414/2000 = 0.707 */
-            overflow: hidden;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .menu-image-section img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%; /* Giữ kích thước ban đầu của ảnh là 2000px */
-            height: 100%; /* Đặt chiều cao tương ứng với tỷ lệ ảnh */
-            object-fit: contain; /* Đảm bảo ảnh vừa khung mà không bị cắt */
-            transform-origin: top left;
-            transform: scale(0.45); /* Scale ảnh 2000px xuống để hiển thị vừa màn hình di động */
-            cursor: pointer;
-        }
+    <meta charset="UTF-8">
 
-        #order-summary {
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #e8eaf6;
-        }
-        #order-summary h2 { color: #3F51B5; margin-top: 0; }
-        #order-list-client li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px dashed #cfd8dc;
-        }
-        #order-list-client li:last-child { border-bottom: none; }
-        .remove-button { background-color: #f44336; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em; margin-left: 10px; }
-        .total-client { font-weight: bold; font-size: 1.1em; color: #E91E63; text-align: right; margin-top: 15px; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .customer-info { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
-        .customer-info label { display: block; margin-bottom: 5px; font-weight: bold; color: #3F51B5; }
-        .customer-info input, .customer-info textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-        .submit-order-button {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-        .submit-order-button:hover { background-color: #0056b3; }
-        .message { text-align: center; margin-top: 20px; font-weight: bold; }
-        .message.success { color: green; }
-        .message.error { color: red; }
-    </style>
+    <title>La Cà Menu & Order</title>
+
+    <style>
+
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+
+        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        h1, h2 { text-align: center; color: #5C6BC0; }
+
+
+
+        /* Style cho phần menu ảnh */
+
+        .menu-image-section {
+
+            position: relative;
+
+            width: 100%;
+
+            padding-bottom: 70.7%; /* Tỷ lệ 1414/2000 = 0.707 */
+
+            overflow: hidden;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .menu-image-section img {
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%; /* Giữ kích thước ban đầu của ảnh là 2000px */
+
+            height: 100%; /* Đặt chiều cao tương ứng với tỷ lệ ảnh */
+
+            object-fit: contain; /* Đảm bảo ảnh vừa khung mà không bị cắt */
+
+            transform-origin: top left;
+
+            transform: scale(0.45); /* Scale ảnh 2000px xuống để hiển thị vừa màn hình di động */
+
+            cursor: pointer;
+
+        }
+
+
+
+        #order-summary {
+
+            margin-top: 30px;
+
+            padding: 20px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            background-color: #e8eaf6;
+
+        }
+
+        #order-summary h2 { color: #3F51B5; margin-top: 0; }
+
+        #order-list-client li {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 8px 0;
+
+            border-bottom: 1px dashed #cfd8dc;
+
+        }
+
+        #order-list-client li:last-child { border-bottom: none; }
+
+        .remove-button { background-color: #f44336; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em; margin-left: 10px; }
+
+        .total-client { font-weight: bold; font-size: 1.1em; color: #E91E63; text-align: right; margin-top: 15px; }
+
+
+
+        .customer-info { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
+
+        .customer-info label { display: block; margin-bottom: 5px; font-weight: bold; color: #3F51B5; }
+
+        .customer-info input, .customer-info textarea {
+
+            width: calc(100% - 22px);
+
+            padding: 10px;
+
+            margin-bottom: 15px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            font-size: 1em;
+
+        }
+
+        .submit-order-button {
+
+            background-color: #007bff;
+
+            color: white;
+
+            padding: 15px 25px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 1.1em;
+
+            width: 100%;
+
+            transition: background-color 0.3s ease;
+
+        }
+
+        .submit-order-button:hover { background-color: #0056b3; }
+
+        .message { text-align: center; margin-top: 20px; font-weight: bold; }
+
+        .message.success { color: green; }
+
+        .message.error { color: red; }
+
+    </style>
+
 </head>
-<body>
-    <div class="container">
-        <h1>La Cà Menu</h1>
-        <p style="text-align: center; font-style: italic;">Chạm vào món bạn muốn để thêm vào giỏ hàng!</p>
 
-        <div id="zoom-wrapper">
+<body>
+
+    <div class="container">
+
+        <h1>La Cà Menu</h1>
+
+        <p style="text-align: center; font-style: italic;">Chạm vào món bạn muốn để thêm vào giỏ hàng!</p>
+
+
+
+ <div id="zoom-wrapper">
             <div style="position: relative; height: 566px;">
                 <div style="transform: scale(0.4); transform-origin: top left; position: absolute; top: 0; left: 0;">
                     <img src="Menu2106.png" usemap="#image-map" width="2000" height="1414">
@@ -123,145 +207,301 @@
                 <area target="" alt="Topping - Hạt nổ Yến Mạch" title="Topping - Hạt nổ Yến Mạch" href="" coords="1414,1244,1889,1289" shape="rect" onclick="addToClientOrder('Hạt nổ Yến Mạch', 5)">
                 <area target="" alt="Topping - Thạch Sương Sáo" title="Topping - Thạch Sương Sáo" href="" coords="1442,1296,1889,1332" shape="rect" onclick="addToClientOrder('Thạch Sương Sáo', 5)">
             </map>
-        </div>
 
-        <div id="order-summary">
-            <h2>Đơn hàng của bạn</h2>
-            <ul id="order-list-client">
-            </ul>
-            <p class="total-client">Tổng cộng: <span id="total-client-display">0</span>K</p>
+     <div id="order-summary">
 
-            <div class="customer-info">
-                <label for="customer-name-input">Tên bạn (hoặc số bàn):</label>
-                <input type="text" id="customer-name-input" placeholder="Ví dụ: Bàn 5" required>
+            <h2>Đơn hàng của bạn</h2>
 
-                <label for="notes-input">Ghi chú (tùy chọn):</label>
-                <textarea id="notes-input" rows="3" placeholder="Ví dụ: ít đường, nhiều đá..."></textarea>
+            <ul id="order-list-client">
 
-                <button class="submit-order-button" onclick="submitOrder()">Gửi đơn hàng</button>
-                <p id="order-message" class="message" style="display: none;"></p>
-            </div>
-        </div>
-    </div>
+                </ul>
 
-    <script>
-        let clientOrder = [];
-        const orderListClient = document.getElementById('order-list-client');
-        const totalClientDisplay = document.getElementById('total-client-display');
-        const customerNameInput = document.getElementById('customer-name-input');
-        const notesInput = document.getElementById('notes-input');
-        const orderMessage = document.getElementById('order-message');
+            <p class="total-client">Tổng cộng: <span id="total-client-display">0</span>K</p>
 
-        // URL của Google Apps Script Web App (sẽ tạo ở Bước 3)
-        // **THAY THẾ BẰNG URL CỦA BẠN SAU KHI TRIỂN KHAI APP SCRIPT**
-        const GOOGLE_APP_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHS_NyU4uGelMhvBQOm6v9e_TrD10tyhY3Cw54gs4QUC_rsLyhOdP41cGQkcUT49GsJQ/exec'; 
 
-        // Hàm được gọi khi click vào các vùng trên ảnh
-        function addToClientOrder(name, price) {
-            clientOrder.push({ name, price });
-            updateClientOrderList();
-            showMessage(`Đã thêm ${name} vào giỏ hàng!`, 'success');
-        }
 
-        function removeFromClientOrder(index) {
-            clientOrder.splice(index, 1);
-            updateClientOrderList();
-        }
+            <div class="customer-info">
 
-        function updateClientOrderList() {
-            orderListClient.innerHTML = '';
-            let total = 0;
+                <label for="customer-name-input">Tên bạn (hoặc số bàn):</label>
 
-            const groupedItems = {};
-            clientOrder.forEach(item => {
-                if (groupedItems[item.name]) {
-                    groupedItems[item.name].quantity++;
-                    groupedItems[item.name].totalPrice += item.price;
-                } else {
-                    groupedItems[item.name] = {
-                        name: item.name,
-                        quantity: 1,
-                        unitPrice: item.price,
-                        totalPrice: item.price
-                    };
-                }
-            });
+                <input type="text" id="customer-name-input" placeholder="Ví dụ: Bàn 5" required>
 
-            Object.values(groupedItems).forEach((item, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${item.name} x${item.quantity} (${item.unitPrice}K/món)</span>
-                    <span>${item.totalPrice}K <button class="remove-button" onclick="removeGroupedItem('${item.name}')">Xóa</button></span>
-                `;
-                orderListClient.appendChild(li);
-                total += item.totalPrice;
-            });
 
-            totalClientDisplay.textContent = total;
-        }
 
-        // Hàm xóa item theo tên (để xóa hết các món cùng loại trong đơn hàng)
-        function removeGroupedItem(itemName) {
-            clientOrder = clientOrder.filter(item => item.name !== itemName);
-            updateClientOrderList();
-        }
+                <label for="notes-input">Ghi chú (tùy chọn):</label>
 
-        async function submitOrder() {
-            if (clientOrder.length === 0) {
-                showMessage('Vui lòng chọn món trước khi gửi đơn hàng!', 'error');
-                return;
-            }
+                <textarea id="notes-input" rows="3" placeholder="Ví dụ: ít đường, nhiều đá..."></textarea>
 
-            const customerName = customerNameInput.value.trim();
-            if (customerName === '') {
-                showMessage('Vui lòng nhập tên bạn hoặc số bàn!', 'error');
-                return;
-            }
 
-            const orderDetails = {
-                customerName: customerName,
-                notes: notesInput.value.trim(),
-                items: clientOrder,
-                total: parseInt(totalClientDisplay.textContent),
-                orderTime: new Date().toLocaleString('vi-VN', {
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    day: '2-digit', month: '2-digit', year: 'numeric'
-                })
-            };
 
-            try {
-                // Sử dụng fetch API để gửi dữ liệu
-                const response = await fetch(GOOGLE_APP_SCRIPT_WEB_APP_URL, {
-                    method: 'POST',
-                    // mode: 'no-cors', // Cần thiết cho Google Apps Script nếu không cấu hình CORS
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderDetails)
-                });
+                <button class="submit-order-button" onclick="submitOrder()">Gửi đơn hàng</button>
 
-                showMessage('Đơn hàng của bạn đã được gửi thành công!', 'success');
+                <p id="order-message" class="message" style="display: none;"></p>
 
-                // Clear form after successful submission
-                clientOrder = [];
-                updateClientOrderList();
-                customerNameInput.value = '';
-                notesInput.value = '';
+            </div>
 
-            } catch (error) {
-                console.error('Lỗi khi gửi đơn hàng:', error);
-                showMessage('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!', 'error');
-            }
-        }
+        </div>
 
-        function showMessage(msg, type) {
-            orderMessage.textContent = msg;
-            orderMessage.className = 'message ' + (type === 'error' ? 'error-message' : 'success'); // Changed class name for consistency
-            orderMessage.style.display = 'block';
-            setTimeout(() => {
-                orderMessage.style.display = 'none';
-            }, 5000); // Ẩn thông báo sau 5 giây
-        }
-    </script>
+    </div>
+
+
+
+    <script>
+
+        let clientOrder = [];
+
+        const orderListClient = document.getElementById('order-list-client');
+
+        const totalClientDisplay = document.getElementById('total-client-display');
+
+        const customerNameInput = document.getElementById('customer-name-input');
+
+        const notesInput = document.getElementById('notes-input');
+
+        const orderMessage = document.getElementById('order-message');
+
+
+
+        // URL của Google Apps Script Web App (sẽ tạo ở Bước 3)
+
+        // **THAY THẾ BẰNG URL CỦA BẠN SAU KHI TRIỂN KHAI APP SCRIPT**
+
+        const GOOGLE_APP_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHS_NyU4uGelMhvBQOm6v9e_TrD10tyhY3Cw54gs4QUC_rsLyhOdP41cGQkcUT49GsJQ/exec'; 
+
+
+
+        // Hàm được gọi khi click vào các vùng trên ảnh
+
+        function addToClientOrder(name, price) {
+
+            clientOrder.push({ name, price });
+
+            updateClientOrderList();
+
+            showMessage(`Đã thêm ${name} vào giỏ hàng!`, 'success');
+
+        }
+
+
+
+        // Không cần hàm này nữa vì chúng ta dùng image map thay vì button
+
+        // document.querySelectorAll('.add-button').forEach(button => {
+
+        //     button.addEventListener('click', (event) => {
+
+        //         const name = event.target.dataset.name;
+
+        //         const price = parseInt(event.target.dataset.price);
+
+        //         addToClientOrder(name, price);
+
+        //     });
+
+        // });
+
+
+
+        function removeFromClientOrder(index) {
+
+            clientOrder.splice(index, 1);
+
+            updateClientOrderList();
+
+        }
+
+
+
+        function updateClientOrderList() {
+
+            orderListClient.innerHTML = '';
+
+            let total = 0;
+
+
+
+            const groupedItems = {};
+
+            clientOrder.forEach(item => {
+
+                if (groupedItems[item.name]) {
+
+                    groupedItems[item.name].quantity++;
+
+                    groupedItems[item.name].totalPrice += item.price;
+
+                } else {
+
+                    groupedItems[item.name] = {
+
+                        name: item.name,
+
+                        quantity: 1,
+
+                        unitPrice: item.price,
+
+                        totalPrice: item.price
+
+                    };
+
+                }
+
+            });
+
+
+
+            Object.values(groupedItems).forEach((item, index) => {
+
+                const li = document.createElement('li');
+
+                li.innerHTML = `
+
+                    <span>${item.name} x${item.quantity} (${item.unitPrice}K/món)</span>
+
+                    <span>${item.totalPrice}K <button class="remove-button" onclick="removeGroupedItem('${item.name}')">Xóa</button></span>
+
+                `;
+
+                orderListClient.appendChild(li);
+
+                total += item.totalPrice;
+
+            });
+
+
+
+            totalClientDisplay.textContent = total;
+
+        }
+
+
+
+        // Hàm xóa item theo tên (để xóa hết các món cùng loại trong đơn hàng)
+
+        function removeGroupedItem(itemName) {
+
+            clientOrder = clientOrder.filter(item => item.name !== itemName);
+
+            updateClientOrderList();
+
+        }
+
+
+
+        async function submitOrder() {
+
+            if (clientOrder.length === 0) {
+
+                showMessage('Vui lòng chọn món trước khi gửi đơn hàng!', 'error');
+
+                return;
+
+            }
+
+
+
+            const customerName = customerNameInput.value.trim();
+
+            if (customerName === '') {
+
+                showMessage('Vui lòng nhập tên bạn hoặc số bàn!', 'error');
+
+                return;
+
+            }
+
+
+
+            const orderDetails = {
+
+                customerName: customerName,
+
+                notes: notesInput.value.trim(),
+
+                items: clientOrder,
+
+                total: parseInt(totalClientDisplay.textContent),
+
+                orderTime: new Date().toLocaleString('vi-VN', {
+
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+
+                    day: '2-digit', month: '2-digit', year: 'numeric'
+
+                })
+
+            };
+
+
+
+            try {
+
+                // Sử dụng fetch API để gửi dữ liệu
+
+                const response = await fetch(GOOGLE_APP_SCRIPT_WEB_APP_URL, {
+
+                    method: 'POST',
+
+                    // mode: 'no-cors', // Cần thiết cho Google Apps Script nếu không cấu hình CORS
+
+                    headers: {
+
+                        'Content-Type': 'application/json',
+
+                    },
+
+                    body: JSON.stringify(orderDetails)
+
+                });
+
+
+
+                showMessage('Đơn hàng của bạn đã được gửi thành công!', 'success');
+
+
+
+                // Clear form after successful submission
+
+                clientOrder = [];
+
+                updateClientOrderList();
+
+                customerNameInput.value = '';
+
+                notesInput.value = '';
+
+
+
+            } catch (error) {
+
+                console.error('Lỗi khi gửi đơn hàng:', error);
+
+                showMessage('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!', 'error');
+
+            }
+
+        }
+
+
+
+        function showMessage(msg, type) {
+
+            orderMessage.textContent = msg;
+
+            orderMessage.className = 'message ' + (type === 'error' ? 'error-message' : 'success'); // Changed class name for consistency
+
+            orderMessage.style.display = 'block';
+
+            setTimeout(() => {
+
+                orderMessage.style.display = 'none';
+
+            }, 5000); // Ẩn thông báo sau 5 giây
+
+        }
+
+    </script>
+
 </body>
+
 </html>
