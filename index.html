@@ -1,547 +1,199 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Cà Beverage - Đặt món</title>
+    <title>Admin Panel</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 15px;
-            background-color: #f5f5f5;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-                             url('https://drive.google.com/thumbnail?id=1TO1R8pEPbEi6k7wLnhGkR99caBBtELmg&sz=w1920');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-size: 2rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .menu-section {
-            margin-bottom: 25px;
-        }
-
-        .menu-section h2 {
-            color: #e74c3c;
-            border-bottom: 2px solid #e74c3c;
-            padding-bottom: 3px;
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-        }
-
-        .menu-item {
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: auto; background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #0056b3; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: left; vertical-align: middle; }
+        th { background-color: #e9ecef; color: #555; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f8f8f8; }
+        tr:hover { background-color: #f1f1f1; }
+        .form-container {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            padding: 25px;
             border: 1px solid #ddd;
+            background-color: #fcfcfc;
             border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            background: rgba(249, 249, 249, 0.9);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            min-height: 60px; /* Đảm bảo đủ chiều cao cho item không có ảnh */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center; /* Căn giữa nội dung theo chiều ngang */
         }
-
-        .menu-item:hover {
-            background: rgba(232, 245, 232, 0.95);
-            border-color: #27ae60;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-        }
-
-        .menu-item.selected {
-            background: rgba(212, 237, 218, 0.95);
-            border-color: #27ae60;
-            border-width: 2px;
-            box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
-        }
-
-        .item-name {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 3px;
-            font-size: 0.9rem;
-        }
-
-        .item-price {
-            color: #e74c3c;
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        /* Thêm style cho ảnh thumbnail nếu có */
-        .menu-item img {
-            max-width: 100px; /* Kích thước tối đa cho ảnh */
-            max-height: 100px; /* Kích thước tối đa cho ảnh */
-            height: auto;
-            margin-bottom: 10px;
-            border-radius: 4px; /* Bo tròn góc ảnh */
-            object-fit: cover; /* Đảm bảo ảnh hiển thị đẹp trong khung */
-        }
-
-        .cart-section {
-            margin-top: 25px;
-            padding: 20px;
-            background: rgba(248, 249, 250, 0.95);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .cart-header {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2c3e50;
+        .form-container label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .form-container input[type="text"],
+        .form-container input[type="number"] {
+            width: calc(100% - 24px); /* Account for padding and border */
+            padding: 12px;
             margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
         }
-
-        .cart-items {
-            min-height: 40px;
-            margin-bottom: 12px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9rem;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .remove-btn {
-            background: #e74c3c;
-            color: white;
+        .buttons { text-align: right; margin-top: 20px; }
+        .buttons button {
+            padding: 12px 20px;
+            margin-left: 10px;
             border: none;
-            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .buttons button.save { background-color: #28a745; color: white; }
+        .buttons button.save:hover { background-color: #218838; }
+        .buttons button.delete { background-color: #dc3545; color: white; }
+        .buttons button.delete:hover { background-color: #c82333; }
+        .buttons button.cancel { background-color: #6c757d; color: white; }
+        .buttons button.cancel:hover { background-color: #5a6268; }
+        
+        .add-new-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .add-new-btn:hover { background-color: #0056b3; }
+
+        .message { margin-top: 20px; padding: 15px; border-radius: 5px; font-size: 15px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        .action-btns button {
+            padding: 8px 12px;
+            margin-right: 5px;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.3s ease;
-        }
-
-        .remove-btn:hover {
-            background: #c0392b;
-        }
-
-        .total-section {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #27ae60;
-            text-align: right;
-            margin-bottom: 15px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-        }
-
-        .form-group textarea {
-            height: 60px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            padding: 12px 25px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
+        .action-btns .edit-btn { background-color: #ffc107; color: #333; }
+        .action-btns .edit-btn:hover { background-color: #e0a800; }
+        .action-btns .delete-btn { background-color: #dc3545; color: white; }
+        .action-btns .delete-btn:hover { background-color: #c82333; }
 
-        .submit-btn:hover {
-            background: linear-gradient(135deg, #219a52, #27ae60);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
-        }
-
-        .submit-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .error-message {
-            background: rgba(248, 215, 218, 0.95);
-            color: #721c24;
+        #csvOutput {
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
             padding: 10px;
-            border-radius: 6px;
-            margin: 8px 0;
-            border: 1px solid #f5c6cb;
-            backdrop-filter: blur(5px);
-            font-size: 0.9rem;
-        }
-
-        .success-message {
-            background: rgba(212, 237, 218, 0.95);
-            color: #155724;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 8px 0;
-            border: 1px solid #c3e6cb;
-            backdrop-filter: blur(5px);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-                margin-bottom: 20px;
-            }
-
-            .menu-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-            }
-
-            .menu-item {
-                padding: 8px;
-                min-height: 50px;
-            }
-
-            .item-name {
-                font-size: 0.8rem;
-            }
-
-            .item-price {
-                font-size: 0.9rem;
-            }
-
-            .menu-section h2 {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .menu-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .menu-item {
-                min-height: 45px;
-                padding: 6px;
-            }
-
-            .item-name {
-                font-size: 0.75rem;
-            }
-
-            .item-price {
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Scrollbar styling cho cart items */
-        .cart-items::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .cart-items::-webkit-scrollbar-track {
-            background: rgba(241, 241, 241, 0.5);
-            border-radius: 3px;
-        }
-
-        .cart-items::-webkit-scrollbar-thumb {
-            background: rgba(196, 196, 196, 0.8);
-            border-radius: 3px;
-        }
-
-        .cart-items::-webkit-scrollbar-thumb:hover {
-            background: rgba(170, 170, 170, 0.9);
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🍹 La Cà Beverage</h1>
+        <h1>Admin Panel - Quản lý Menu</h1>
 
-        <div id="dynamic-menu-container"></div>
-        
-        <div class="cart-section">
-            <div class="cart-header">🛒 Giỏ hàng</div>
-            <div class="cart-items" id="cartItems">
-                <p style="color: #666; font-style: italic;">Chưa có món nào trong giỏ hàng</p>
-            </div>
-            <div class="total-section">
-                Tổng cộng: <span id="totalAmount">0</span>K
-            </div>
+        <button id="addNewBtn" class="add-new-btn">Thêm Món Mới</button>
 
-            <div class="form-group">
-                <label for="customerName">Tên khách hàng / Số bàn *</label>
-                <input type="text" id="customerName" placeholder="Ví dụ: Nguyễn Văn A hoặc Bàn 5" required>
-            </div>
-
-            <div class="form-group">
-                <label for="notes">Ghi chú (tùy chọn)</label>
-                <textarea id="notes" placeholder="Ghi chú đặc biệt (ít đường, nhiều đá, v.v...)"></textarea>
-            </div>
-
-            <button class="submit-btn" onclick="submitOrder()" id="submitBtn">
-                Gửi đơn hàng
-            </button>
-
-            <div id="message"></div>
+        <div id="dataTableContainer" class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Món</th>
+                        <th>Tên Món</th>
+                        <th>Giá (K)</th>
+                        <th>Danh mục</th>
+                        <th>Icon</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="item-table-body">
+                    </tbody>
+            </table>
         </div>
+
+        <div id="formContainer" class="form-container">
+            <h2>Chỉnh sửa/Thêm Món</h2>
+            <form id="itemForm">
+                <label for="item-id">ID Món:</label>
+                <input type="text" id="item-id" readonly><br>
+
+                <label for="item-name">Tên Món:</label>
+                <input type="text" id="item-name" required><br>
+
+                <label for="item-price">Giá (K):</label>
+                <input type="number" id="item-price" required><br>
+
+                <label for="item-category">Danh mục:</label>
+                <input type="text" id="item-category"><br>
+
+                <label for="item-icon">Icon:</label>
+                <input type="text" id="item-icon"><br>
+
+                <div class="buttons">
+                    <button type="button" id="saveBtn" class="save">Lưu</button>
+                    <button type="button" id="deleteBtn" class="delete">Xóa</button>
+                    <button type="button" id="cancelBtn" class="cancel">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="messageDisplay" class="message warning" style="display:none;">
+            <p>Lưu ý quan trọng: Các thay đổi bạn thực hiện ở đây chỉ có hiệu lực trong trình duyệt của bạn. Để lưu các thay đổi này vĩnh viễn vào Google Sheet, bạn cần phải sao chép dữ liệu từ nút "Tạo CSV để cập nhật thủ công" và **dán đè thủ công vào Google Sheet gốc**, sau đó **xuất bản lại sheet**.</p>
+            <p>Việc ghi trực tiếp từ trang web vào Google Sheet yêu cầu một hệ thống backend (ví dụ: Google Apps Script hoặc server riêng), điều này phức tạp hơn nhiều.</p>
+        </div>
+        <button id="generateCsvBtn" class="add-new-btn" style="margin-top: 20px; background-color: #4CAF50;">Tạo CSV để cập nhật thủ công</button>
+        <textarea id="csvOutput" style="width: 100%; height: 200px; margin-top: 10px; display: none;" readonly></textarea>
+
     </div>
 
     <script>
-        // URL Google Apps Script Web App (GIỮ NGUYÊN)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpd2Pt2DFrEmiCxPvosEF_QC-SbBrPc1HbB_JW-bOsm_AA9zmh7hETwX9x4pZRWHtlQ/exec';
+        // ** THAY THẾ BẰNG URL CSV CỦA BẠN TỪ GOOGLE SHEET ĐÃ XUẤT BẢN **
+        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSv_PxGRr5CBEBhqfDB5C4qyMkERf6OMa2mKHQRadetWH4FJtf_pV7lEoggCM0BXBurpc93HfP2lFRs/pub?gid=0&single=true&output=csv'; 
 
-        // URL của Google Sheet đã xuất bản (ĐÃ KIỂM TRA LẠI)
-        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSv_PxGRr5CBEBhqfDB5C4qyMkERf6OMa2mKHQRadetWH4FJtf_pV7lEoggCM0BXBurpc93HfP2lFRs/pub?gid=0&single=true&output=csv';
+        let menuData = []; // Dữ liệu menu sẽ được lưu trữ ở đây
+        let activeRow = null; // Dùng để theo dõi hàng đang được chỉnh sửa
 
-        // Biến giỏ hàng (GIỮ NGUYÊN)
-        let cart = [];
-        let totalAmount = 0;
+        // Lấy các phần tử DOM
+        const dataTableContainer = document.getElementById('dataTableContainer');
+        const formContainer = document.getElementById('formContainer');
+        const itemForm = document.getElementById('itemForm');
+        const itemTableBody = document.getElementById('item-table-body');
+        const addNewBtn = document.getElementById('addNewBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const messageDisplay = document.getElementById('messageDisplay');
+        const generateCsvBtn = document.getElementById('generateCsvBtn');
+        const csvOutput = document.getElementById('csvOutput');
 
-        // Function thêm món vào giỏ hàng (GIỮ NGUYÊN)
-        function addToCart(itemName, itemPrice) {
-            cart.push({
-                name: itemName,
-                price: itemPrice
-            });
-            totalAmount += itemPrice;
-            updateCartDisplay();
+        // Input fields
+        const itemIdInput = document.getElementById('item-id');
+        const itemNameInput = document.getElementById('item-name');
+        const itemPriceInput = document.getElementById('item-price');
+        const itemCategoryInput = document.getElementById('item-category');
+        const itemIconInput = document.getElementById('item-icon');
 
-            // Hiệu ứng visual (GIỮ NGUYÊN)
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                // Kiểm tra bằng textContent để tìm đúng món đã click, cẩn thận với trùng tên
-                // Cần đảm bảo item.name trong HTML khớp với itemName truyền vào
-                const itemNameElement = item.querySelector('.item-name');
-                if (itemNameElement && itemNameElement.textContent === itemName) {
-                    item.classList.add('selected');
-                    setTimeout(() => {
-                        item.classList.remove('selected');
-                    }, 300);
-                }
-            });
-
-            console.log(`Đã thêm ${itemName} - ${itemPrice}K vào giỏ hàng`);
-        }
-
-        // Function cập nhật hiển thị giỏ hàng (GIỮ NGUYÊN)
-        function updateCartDisplay() {
-            const cartItemsElement = document.getElementById('cartItems');
-            const totalElement = document.getElementById('totalAmount');
-
-            if (cart.length === 0) {
-                cartItemsElement.innerHTML = '<p style="color: #666; font-style: italic;">Chưa có món nào trong giỏ hàng</p>';
-            } else {
-                // Group items theo tên (GIỮ NGUYÊN)
-                const groupedItems = {};
-                cart.forEach(item => {
-                    if (groupedItems[item.name]) {
-                        groupedItems[item.name].quantity++;
-                        groupedItems[item.name].totalPrice += item.price;
-                    } else {
-                        groupedItems[item.name] = {
-                            name: item.name,
-                            quantity: 1,
-                            unitPrice: item.price,
-                            totalPrice: item.price
-                        };
-                    }
-                });
-
-                cartItemsElement.innerHTML = Object.values(groupedItems).map(item =>
-                    `<div class="cart-item">
-                        <span>${item.name} x${item.quantity} - ${item.totalPrice}K</span>
-                        <button class="remove-btn" onclick="removeFromCart('${item.name}')">Xóa</button>
-                    </div>`
-                ).join('');
-            }
-
-            totalElement.textContent = totalAmount;
-        }
-
-        // Function xóa món khỏi giỏ hàng (GIỮ NGUYÊN)
-        function removeFromCart(itemName) {
-            // Tìm và xóa chỉ một lần xuất hiện của món hàng
-            const index = cart.findIndex(item => item.name === itemName);
-            if (index !== -1) {
-                totalAmount -= cart[index].price; // Giảm tổng tiền theo giá của món bị xóa
-                cart.splice(index, 1); // Xóa món đó khỏi mảng giỏ hàng
-                updateCartDisplay();
-                showMessage(`Đã xóa ${itemName} khỏi giỏ hàng`, 'success');
-            }
-        }
-
-        // Function hiển thị thông báo (GIỮ NGUYÊN)
-        function showMessage(message, type = 'error') {
-            const messageElement = document.getElementById('message');
-            messageElement.innerHTML = `<div class="${type}-message">${message}</div>`;
-
-            setTimeout(() => {
-                messageElement.innerHTML = '';
-            }, 5000);
-        }
-
-        // Function gửi đơn hàng (GIỮ NGUYÊN)
-        function submitOrder() {
-            const customerName = document.getElementById('customerName').value;
-            const notes = document.getElementById('notes').value;
-            const submitBtn = document.getElementById('submitBtn');
-
-            // Validation (GIỮ NGUYÊN)
-            if (!customerName.trim()) {
-                showMessage('Vui lòng nhập tên khách hàng!', 'error');
-                return;
-            }
-
-            if (cart.length === 0) {
-                showMessage('Vui lòng chọn ít nhất một món!', 'error');
-                return;
-            }
-
-            // Hiển thị loading (GIỮ NGUYÊN)
-            submitBtn.textContent = 'Đang gửi...';
-            submitBtn.disabled = true;
-
-            console.log("Preparing to submit order...");
-            console.log("Cart items:", cart);
-            console.log("Customer name:", customerName);
-            console.log("Total:", totalAmount);
-
-            // Tạo form thật sự submit (sẽ redirect sang trang kết quả) (GIỮ NGUYÊN)
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = SCRIPT_URL;
-            form.target = '_blank'; // Mở tab mới để xem kết quả
-
-            // Thêm dữ liệu vào form (GIỮ NGUYÊN)
-            const data = {
-                customerName: customerName.trim(),
-                notes: notes.trim(),
-                items: JSON.stringify(cart),
-                total: totalAmount,
-                orderTime: new Date().toLocaleString('vi-VN')
-            };
-
-            console.log("Form data:", data);
-
-            Object.keys(data).forEach(key => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = data[key];
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-
-            // Thông báo và reset (GIỮ NGUYÊN)
-            showMessage('🎉 Đã gửi đơn hàng! Kiểm tra tab mới để xem kết quả.', 'success');
-
-            // Reset form sau 2 giây (GIỮ NGUYÊN)
-            setTimeout(() => {
-                cart = [];
-                totalAmount = 0;
-                updateCartDisplay();
-                document.getElementById('customerName').value = '';
-                document.getElementById('notes').value = '';
-
-                submitBtn.textContent = 'Gửi đơn hàng';
-                submitBtn.disabled = false;
-
-                document.body.removeChild(form);
-            }, 2000);
-        }
-
-        // --- BẮT ĐẦU CÁC HÀM MỚI ĐỂ XỬ LÝ MENU ĐỘNG TỪ GOOGLE SHEET ---
-
-        // Function để phân tích cú pháp CSV
+        // Hàm chuyển đổi CSV thành JSON
         function csvToJson(csv) {
             const lines = csv.split('\n');
-            // Lấy tiêu đề, loại bỏ khoảng trắng và filter để loại bỏ các tiêu đề trống
-            const headers = lines[0].split(',').map(header => header.trim()).filter(header => header !== '');
             const result = [];
+            // Lấy tiêu đề cột, loại bỏ ký tự carriage return nếu có
+            const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
 
-            // Bắt đầu từ dòng thứ 2 (chỉ mục 1) vì dòng đầu tiên là tiêu đề
             for (let i = 1; i < lines.length; i++) {
-                const obj = {};
-                const currentLine = lines[i].split(',');
-                // Chỉ xử lý nếu dòng không rỗng (tránh dòng trống cuối file CSV)
-                if (currentLine.length > 1 && currentLine.some(cell => cell.trim() !== '')) {
+                const currentline = lines[i].split(',');
+                if (currentline.length === headers.length) { // Đảm bảo dòng có đủ số cột
+                    const obj = {};
                     for (let j = 0; j < headers.length; j++) {
-                        // Xử lý giá trị rỗng và bỏ khoảng trắng
-                        obj[headers[j]] = currentLine[j] ? currentLine[j].trim() : '';
+                        // Xử lý giá trị trong dấu ngoặc kép và loại bỏ khoảng trắng thừa
+                        let value = currentline[j] ? currentline[j].trim() : '';
+                        if (value.startsWith('"') && value.endsWith('"')) {
+                            value = value.substring(1, value.length - 1); // Bỏ dấu ngoặc kép
+                        }
+                        obj[headers[j]] = value;
                     }
                     result.push(obj);
                 }
@@ -549,122 +201,191 @@
             return result;
         }
 
-        // Function để tạo HTML cho menu từ dữ liệu
-        function renderMenu(menuData) {
-            const dynamicMenuContainer = document.getElementById('dynamic-menu-container'); // Lấy container rỗng đã thêm vào HTML
-            dynamicMenuContainer.innerHTML = ''; // Xóa bất kỳ nội dung cũ nào (nếu có)
-
-            // Nhóm các món theo category
-            const groupedMenu = menuData.reduce((acc, item) => {
-                // Đảm bảo tên danh mục không rỗng và tồn tại
-                const category = item.category && item.category.trim() !== '' ? item.category.trim() : 'Món Khác';
-                if (!acc[category]) {
-                    acc[category] = [];
+        // Hàm tải dữ liệu từ Google Sheet
+        async function loadDataFromSheet() {
+            try {
+                const response = await fetch(googleSheetUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                acc[category].push(item);
-                return acc;
-            }, {});
-
-            // Tạo HTML cho từng category
-            for (const category in groupedMenu) {
-                const section = document.createElement('div');
-                section.classList.add('menu-section');
-
-                const h2 = document.createElement('h2');
-                h2.textContent = category; // Sử dụng tên danh mục từ sheet
-                section.appendChild(h2);
-
-                const grid = document.createElement('div');
-                grid.classList.add('menu-grid');
-
-                groupedMenu[category].forEach(item => {
-                    const menuItem = document.createElement('div');
-                    menuItem.classList.add('menu-item');
-                    
-                    // Sử dụng onclick như bạn yêu cầu
-                    // Đảm bảo item.name và item.price có giá trị hợp lệ
-                    if (item.name && item.price && !isNaN(parseInt(item.price))) {
-                        menuItem.setAttribute('onclick', `addToCart('${item.name.replace(/'/g, "\\'")}', ${parseInt(item.price)})`);
-                    } else {
-                        // Log lỗi nếu dữ liệu không hợp lệ để dễ debug
-                        console.error('Dữ liệu món ăn không hợp lệ:', item);
-                        menuItem.style.backgroundColor = '#ffe0e0'; // Highlight món lỗi
-                        menuItem.style.pointerEvents = 'none'; // Không cho click
-                    }
-
-                    const nameDiv = document.createElement('div');
-                    nameDiv.classList.add('item-name');
-                    nameDiv.textContent = item.name || 'Không tên'; // Hiển thị 'Không tên' nếu rỗng
-                    menuItem.appendChild(nameDiv);
-
-                    const priceDiv = document.createElement('div');
-                    priceDiv.classList.add('item-price');
-                    priceDiv.textContent = `${item.price || '0'}K`; // Hiển thị '0' nếu rỗng
-                    menuItem.appendChild(priceDiv);
-
-                    grid.appendChild(menuItem);
-                });
-
-                section.appendChild(grid);
-                dynamicMenuContainer.appendChild(section); // Thêm section vào container động
+                const csvText = await response.text();
+                menuData = csvToJson(csvText);
+                renderTable(menuData);
+                showMessage('Dữ liệu đã được tải thành công.', 'success');
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu từ Google Sheet:', error);
+                showMessage(`Không thể tải dữ liệu: ${error.message}. Vui lòng kiểm tra URL và kết nối mạng.`, 'error');
             }
         }
 
-        // Initialize khi trang load (ĐÃ THAY ĐỔI ĐỂ TẢI MENU ĐỘNG)
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Đang tải menu từ Google Sheet...');
-            fetch(SHEET_URL)
-                .then(response => {
-                    if (!response.ok) {
-                        // Log lỗi HTTP chi tiết hơn
-                        console.error(`Lỗi HTTP: Status ${response.status} - ${response.statusText}`);
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(csv => {
-                    console.log('Đã nhận CSV:', csv.substring(0, 200) + '...'); // Log một phần CSV để kiểm tra
-                    const menuData = csvToJson(csv);
-                    console.log('Dữ liệu menu sau csvToJson:', menuData);
-
-                    // Lọc bỏ các mục không hợp lệ hoặc rỗng
-                    const filteredMenuData = menuData.filter(item => 
-                        item.name && item.name.trim() !== '' && 
-                        item.price && !isNaN(parseInt(item.price))
-                    );
-                    console.log('Dữ liệu menu đã lọc:', filteredMenuData);
-
-                    if (filteredMenuData.length > 0) {
-                        renderMenu(filteredMenuData);
-                    } else {
-                        showMessage('Không tìm thấy món nào hợp lệ trong Google Sheet. Vui lòng kiểm tra tên cột (name, price, category) và dữ liệu.', 'error');
-                        console.warn('MenuData rỗng hoặc không có món hợp lệ. Vui lòng kiểm tra cấu trúc sheet và dữ liệu.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi khi tải hoặc xử lý dữ liệu từ Google Sheet:', error);
-                    // Thông báo lỗi chi tiết hơn cho người dùng
-                    if (error.message.includes('HTTP error!')) {
-                        showMessage(`Không thể tải menu. Lỗi mạng hoặc cấu hình Google Sheet. Chi tiết: ${error.message}`, 'error');
-                    } else if (error.message.includes('Failed to fetch')) {
-                         showMessage('Không thể tải menu. Có thể do lỗi kết nối hoặc vấn đề bảo mật (CORS). Hãy thử chạy trên máy chủ web cục bộ.', 'error');
-                    } else {
-                        showMessage(`Không thể tải menu. Vui lòng kiểm tra kết nối hoặc cấu hình Google Sheet. Chi tiết: ${error.message}`, 'error');
-                    }
-                });
-
-            updateCartDisplay(); // Luôn khởi tạo hiển thị giỏ hàng
-            console.log('🍹 La Cà Beverage System loaded successfully!');
-            console.log('Script URL:', SCRIPT_URL);
-        });
-
-        //Cảnh báo có muốn rời đi khi đơn hàng đang có trong giỏ mà chưa được gửi hay không
-        window.onbeforeunload = function() {
-            if (cart.length > 0) {
-                return "Bạn có các món hàng trong giỏ. Bạn có chắc chắn muốn rời đi?";
+        // Hàm hiển thị dữ liệu ra bảng
+        function renderTable(data) {
+            itemTableBody.innerHTML = ''; // Xóa nội dung cũ
+            if (data.length === 0) {
+                itemTableBody.innerHTML = '<tr><td colspan="6">Không có dữ liệu.</td></tr>';
+                return;
             }
-            return undefined;
-        };
+
+            data.forEach((item, index) => {
+                const row = itemTableBody.insertRow();
+                row.dataset.index = index; // Lưu index của item trong mảng để dễ chỉnh sửa/xóa
+
+                row.insertCell().textContent = item['ID Món'] || ''; // Cột ID Món
+                row.insertCell().textContent = item.name || ''; // Cột Tên Món
+                row.insertCell().textContent = `${item.price || '0'}K`; // Cột Giá
+                row.insertCell().textContent = item.category || ''; // Cột Danh mục
+                row.insertCell().textContent = item.category_icon || ''; // Cột Icon
+
+                const actionsCell = row.insertCell();
+                actionsCell.classList.add('action-btns');
+                
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Sửa';
+                editButton.classList.add('edit-btn');
+                editButton.onclick = () => editItem(row);
+                actionsCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Xóa';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.onclick = () => deleteItem(row);
+                actionsCell.appendChild(deleteButton);
+            });
+            showMessage('Lưu ý: Các thay đổi chỉ có hiệu lực trên trình duyệt của bạn. Để lưu thực sự vào Google Sheet, bạn cần xuất bản lại hoặc sử dụng một hệ thống backend.', 'warning');
+            csvOutput.style.display = 'none'; // Ẩn CSV output khi bảng được render lại
+        }
+
+        // Hàm hiển thị form chỉnh sửa/thêm
+        function showForm() {
+            dataTableContainer.style.display = 'none';
+            addNewBtn.style.display = 'none';
+            formContainer.style.display = 'block';
+            deleteBtn.style.display = activeRow ? 'inline-block' : 'none'; // Hiện nút xóa nếu đang sửa, ẩn nếu thêm mới
+            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ form
+        }
+
+        // Hàm ẩn form và hiển thị bảng
+        function hideForm() {
+            dataTableContainer.style.display = 'block';
+            addNewBtn.style.display = 'inline-block';
+            formContainer.style.display = 'none';
+            itemForm.reset(); // Xóa dữ liệu trong form
+            activeRow = null; // Đặt lại activeRow
+            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ bảng
+        }
+
+        // Hàm điền dữ liệu vào form khi click Sửa
+        function editItem(row) {
+            activeRow = row;
+            const index = parseInt(row.dataset.index);
+            const item = menuData[index];
+
+            itemIdInput.value = item['ID Món'] || '';
+            itemNameInput.value = item.name || '';
+            itemPriceInput.value = parseInt(item.price) || ''; // Convert to number
+            itemCategoryInput.value = item.category || '';
+            itemIconInput.value = item.category_icon || '';
+            
+            showForm();
+        }
+
+        // Hàm xóa món
+        function deleteItem(row) {
+            if (!confirm('Bạn có chắc chắn muốn xóa món này?')) {
+                return;
+            }
+
+            const index = parseInt(row.dataset.index);
+            menuData.splice(index, 1); // Xóa khỏi mảng menuData
+            renderTable(menuData); // Render lại bảng
+            hideForm();
+            showMessage('Đã xóa món khỏi danh sách (tạm thời trong trình duyệt).', 'warning');
+        }
+
+        // Hàm lưu (thêm mới hoặc cập nhật)
+        function saveItem() {
+            const newItem = {
+                'ID Món': itemIdInput.value.trim(),
+                'name': itemNameInput.value.trim(),
+                'price': parseInt(itemPriceInput.value) || 0,
+                'category': itemCategoryInput.value.trim(),
+                'category_icon': itemIconInput.value.trim()
+            };
+
+            if (!newItem.name || !newItem.price) {
+                showMessage('Tên món và Giá không được để trống!', 'error');
+                return;
+            }
+
+            if (activeRow) {
+                // Cập nhật món đã có
+                const index = parseInt(activeRow.dataset.index);
+                menuData[index] = newItem;
+                showMessage('Đã cập nhật món (tạm thời trong trình duyệt).', 'warning');
+            } else {
+                // Thêm món mới
+                // Tạo ID mới tự động: max ID hiện có + 1
+                const maxId = menuData.reduce((max, item) => Math.max(max, parseInt(item['ID Món'] || 0)), 0);
+                newItem['ID Món'] = (maxId + 1).toString(); // Chuyển lại thành chuỗi
+                menuData.push(newItem);
+                showMessage('Đã thêm món mới (tạm thời trong trình duyệt).', 'warning');
+            }
+            renderTable(menuData); // Render lại bảng với dữ liệu mới
+            hideForm();
+        }
+
+        // Hàm thêm món mới
+        function addNewItem() {
+            activeRow = null; // Đặt activeRow về null để biết là đang thêm mới
+            itemForm.reset(); // Xóa sạch form
+            itemIdInput.value = 'Tự động'; // Hoặc để trống nếu bạn muốn tự gán
+            showForm();
+        }
+
+        // Hàm hiển thị thông báo
+        function showMessage(msg, type) {
+            messageDisplay.textContent = msg;
+            messageDisplay.className = `message ${type}`; // Đổi class để đổi màu
+            messageDisplay.style.display = 'block';
+            if (type === 'success' || type === 'error') {
+                 setTimeout(() => {
+                    messageDisplay.style.display = 'block'; // Giữ lại thông báo warning
+                }, 5000); // Tự động ẩn sau 5s nếu là success/error
+            }
+        }
+
+        // Hàm tạo chuỗi CSV từ dữ liệu hiện tại
+        function generateCsv() {
+            const headers = ['ID Món', 'name', 'price', 'category', 'category_icon'];
+            let csvContent = headers.map(header => `"${header}"`).join(',') + '\n';
+
+            menuData.forEach(item => {
+                const row = headers.map(header => {
+                    let value = item[header] !== undefined && item[header] !== null ? item[header].toString().replace(/"/g, '""') : '';
+                    if (value.includes(',') || value.includes('\n') || value.includes('"') || value.trim() !== value) {
+                        return `"${value}"`; // Bọc trong dấu ngoặc kép nếu có ký tự đặc biệt
+                    }
+                    return value;
+                }).join(',');
+                csvContent += row + '\n';
+            });
+
+            csvOutput.value = csvContent;
+            csvOutput.style.display = 'block';
+            csvOutput.select(); // Chọn toàn bộ nội dung để dễ dàng sao chép
+            showMessage('Vui lòng sao chép nội dung bên dưới và dán vào Google Sheet của bạn. Sau đó, đừng quên "Xuất bản lên web" lại Google Sheet!', 'success');
+        }
+
+
+        // Gán sự kiện cho các nút
+        addNewBtn.addEventListener('click', addNewItem);
+        saveBtn.addEventListener('click', saveItem);
+        cancelBtn.addEventListener('click', hideForm); // Nút hủy luôn ẩn form
+        deleteBtn.addEventListener('click', () => deleteItem(activeRow)); // Gán sự kiện cho nút xóa trong form
+        generateCsvBtn.addEventListener('click', generateCsv);
+
+        // Tải dữ liệu khi trang được load
+        document.addEventListener('DOMContentLoaded', loadDataFromSheet);
     </script>
 </body>
 </html>
