@@ -995,9 +995,7 @@
         <div class="loading">Đang tải dữ liệu...</div>
     </div>
 </div>
-                <div id="ordersContent">
-                    <div class="loading">Đang tải dữ liệu...</div>
-                </div>
+      	    
             </div>
 
             <!-- Tab quản lý menu -->
@@ -1050,7 +1048,7 @@
     <button class="refresh-btn" onclick="refreshData()" title="Làm mới dữ liệu">🔄</button>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpd2Pt2DFrEmiCxPvosEF_QC-SbBrPc1HbB_JW-bOsm_AA9zmh7hETwX9x4pZRWHtlQ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3NiHVvXZJpaw1f4e7VPT4x7YzP85nqULuLsN1DPtYoKLq5Uo9E7wdp-QNCeAUx88s/exec';
 
         let currentOrders = [];
         let currentMenu = [];
@@ -1256,22 +1254,22 @@ function displayMenu(menu) {
     // Group menu theo category
     const categorized = {};
     menu.forEach(item => {
-        const name = item['Tên Món'] || '';
-        const price = item['Giá (K)'] || '';
+        const name = item['name'] || '';
+        const price = item['price'] || '';
         const id = item['ID Món'] || '';
         
         // Determine category based on menu structure
         let category = 'KHÁC';
         if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) {
-            category = 'CAFE';
+            category = '☕ CAFE';
         } else if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = 'NƯỚC ÉP';
-        } else if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MĂNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) {
-            category = 'TRÀ';
+            category = '🥤 NƯỚC ÉP';
+        } else if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MÃNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) {
+            category = '🍃 TRÀ';
         } else if (['KEM MẮN', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) {
-            category = 'TRÀ SỮA';
+            category = '🧋 TRÀ SỮA';
         } else if (['XOÀI', 'BLUE SKY', 'DỨA LƯỜI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = 'SỮA CHUA LẮC';
+            category = '🥛 SỮA CHUA LẮC';
         }
         
         if (!categorized[category]) {
@@ -1920,8 +1918,8 @@ function displayMenu(menu) {
     // Group menu by category
     const categorized = {};
     menu.forEach(item => {
-        const name = item['Tên Món'] || '';
-        const price = item['Giá (K)'] || '';
+        const name = item['name'] || '';
+        const price = item['price'] || '';
         const id = item['ID Món'] || '';
         
         let category = determineCategory(name);
