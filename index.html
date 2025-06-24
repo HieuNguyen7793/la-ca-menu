@@ -3,280 +3,661 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Cà Menu & Order</title>
+    <title>La Cà Beverage - Đặt món</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; color: #5C6BC0; }
 
-        /* Style cho phần menu ảnh */
-        .menu-image-section {
-            position: relative;
-            width: 100%;
-            padding-bottom: 70.7%; /* Tỷ lệ 1414/2000 = 0.707 */
-            overflow: hidden;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 15px;
+        background-color: #f5f5f5;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                  url('https://drive.google.com/thumbnail?id=1TO1R8pEPbEi6k7wLnhGkR99caBBtELmg&sz=w1920');
+
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }
+    
+    .container {
+
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        font-size: 2rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .menu-section {
+        margin-bottom: 25px;
+    }
+    
+    .menu-section h2 {
+        color: #e74c3c;
+        border-bottom: 2px solid #e74c3c;
+        padding-bottom: 3px;
+        margin-bottom: 12px;
+        font-size: 1.3rem;
+    }
+    
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+    }
+    
+    .menu-item {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: rgba(249, 249, 249, 0.9);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .menu-item:hover {
+        background: rgba(232, 245, 232, 0.95);
+        border-color: #27ae60;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .menu-item.selected {
+        background: rgba(212, 237, 218, 0.95);
+        border-color: #27ae60;
+        border-width: 2px;
+        box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+    }
+    
+    .item-name {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 3px;
+        font-size: 0.9rem;
+    }
+    
+    .item-price {
+        color: #e74c3c;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    
+    .cart-section {
+        margin-top: 25px;
+        padding: 20px;
+        background: rgba(248, 249, 250, 0.95);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .cart-header {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+    
+    .cart-items {
+        min-height: 40px;
+        margin-bottom: 12px;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+    }
+    
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+    
+    .remove-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 3px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: background 0.3s ease;
+    }
+    
+    .remove-btn:hover {
+        background: #c0392b;
+    }
+    
+    .total-section {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #27ae60;
+        text-align: right;
+        margin-bottom: 15px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 0.9rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(5px);
+    }
+    
+    .form-group textarea {
+        height: 60px;
+        resize: vertical;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #219a52, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    }
+    
+    .submit-btn:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .error-message {
+        background: rgba(248, 215, 218, 0.95);
+        color: #721c24;
+        padding: 10px;
+        border-radius: 6px;
+        margin: 8px 0;
+        border: 1px solid #f5c6cb;
+        backdrop-filter: blur(5px);
+        font-size: 0.9rem;
+    }
+    
+    .success-message {
+        background: rgba(212, 237, 218, 0.95);
+        color: #155724;
+        padding: 10px;
+        border-radius: 6px;
+        margin: 8px 0;
+        border: 1px solid #c3e6cb;
+        backdrop-filter: blur(5px);
+        font-size: 0.9rem;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+        
+        .container {
+            padding: 15px;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
             margin-bottom: 20px;
         }
-        .menu-image-section img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%; /* Giữ kích thước ban đầu của ảnh là 2000px */
-            height: 100%; /* Đặt chiều cao tương ứng với tỷ lệ ảnh */
-            object-fit: contain; /* Đảm bảo ảnh vừa khung mà không bị cắt */
-            transform-origin: top left;
-            transform: scale(0.45); /* Scale ảnh 2000px xuống để hiển thị vừa màn hình di động */
-            cursor: pointer;
+        
+        .menu-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
+        
+        .menu-item {
+            padding: 8px;
+            min-height: 50px;
+        }
+        
+        .item-name {
+            font-size: 0.8rem;
+        }
+        
+        .item-price {
+            font-size: 0.9rem;
+        }
+        
+        .menu-section h2 {
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .menu-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .menu-item {
+            min-height: 45px;
+            padding: 6px;
+        }
+        
+        .item-name {
+            font-size: 0.75rem;
+        }
+        
+        .item-price {
+            font-size: 0.85rem;
+        }
+    }
+    
+    /* Scrollbar styling cho cart items */
+    .cart-items::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .cart-items::-webkit-scrollbar-track {
+        background: rgba(241, 241, 241, 0.5);
+        border-radius: 3px;
+    }
+    
+    .cart-items::-webkit-scrollbar-thumb {
+        background: rgba(196, 196, 196, 0.8);
+        border-radius: 3px;
+    }
+    
+    .cart-items::-webkit-scrollbar-thumb:hover {
+        background: rgba(170, 170, 170, 0.9);
+    }
+    
+	    .menu-item {
+	    display: flex;
+	    flex-direction: column; /* Sắp xếp các thành phần theo chiều dọc */
+	    align-items: center;   /* Căn giữa theo chiều ngang */
+	    text-align: center;    /* Căn giữa chữ */
+	    /* Các thuộc tính khác của menu-item */
+	}
 
-        #order-summary {
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #e8eaf6;
-        }
-        #order-summary h2 { color: #3F51B5; margin-top: 0; }
-        #order-list-client li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px dashed #cfd8dc;
-        }
-        #order-list-client li:last-child { border-bottom: none; }
-        .remove-button { background-color: #f44336; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em; margin-left: 10px; }
-        .total-client { font-weight: bold; font-size: 1.1em; color: #E91E63; text-align: right; margin-top: 15px; }
+	.menu-item img {
+	    max-width: 100%; /* Đảm bảo hình ảnh không tràn ra khỏi ô */
+	    height: auto;    /* Giữ tỉ lệ khung hình */
+	    margin-bottom: 10px; /* Khoảng cách dưới hình ảnh */
+	    border-radius: 8px; /* Bo tròn góc ảnh (tùy chọn) */
+	}
+</style>
 
-        .customer-info { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
-        .customer-info label { display: block; margin-bottom: 5px; font-weight: bold; color: #3F51B5; }
-        .customer-info input, .customer-info textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-        .submit-order-button {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-        .submit-order-button:hover { background-color: #0056b3; }
-        .message { text-align: center; margin-top: 20px; font-weight: bold; }
-        .message.success { color: green; }
-        .message.error { color: red; }
-    </style>
 </head>
 <body>
     <div class="container">
-        <h1>La Cà Menu</h1>
-        <p style="text-align: center; font-style: italic;">Chạm vào món bạn muốn để thêm vào giỏ hàng!</p>
-
-  <div id="zoom-wrapper">
-
-    <div style="position: relative; height: 566px;">
-      <div style="transform: scale(0.4); transform-origin: top left; position: absolute; top: 0; left: 0;">
-        <img src="Menu2106.png" usemap="#image-map" width="2000" height="1414">
-      </div>
-    </div>
-
-    <div id="orders" style="margin-top: 10px;"></div>
-
-<map name="image-map">
-  <area shape="rect" coords="288,596,746,641" title="Trà Hoa quả Nhiệt đới" alt="Trà Hoa quả Nhiệt đới" onclick="addToClientOrder('Trà Hoa quả Nhiệt đới', 30)">
-  <area shape="rect" coords="288,647,746,683" title="Trà Quýt" alt="Trà Quýt" onclick="addToClientOrder('Trà Quýt', 25)">
-  <area shape="rect" coords="288,689,746,725" title="Trà Xoài Chanh leo" alt="Trà Xoài Chanh leo" onclick="addToClientOrder('Trà Xoài Chanh leo', 25)">
-  <area shape="rect" coords="288,731,746,765" title="Trà Sen vàng" alt="Trà Sen vàng" onclick="addToClientOrder('Trà Sen vàng', 30)">
-  <area shape="rect" coords="285,770,746,810" title="Trà Dâu Việt quất" alt="Trà Dâu Việt quất" onclick="addToClientOrder('Trà Dâu Việt quất', 25)">
-  <area shape="rect" coords="288,814,746,850" title="Trà Mãng Cầu" alt="Trà Mãng Cầu" onclick="addToClientOrder('Trà Mãng Cầu', 25)">
-  <area shape="rect" coords="291,856,746,893" title="Trà Chanh" alt="Trà Chanh" onclick="addToClientOrder('Trà Chanh', 15)">
-
-  <area shape="rect" coords="212,952,642,1019" title="Trà Sữa Truyền thống" alt="Trà Sữa Truyền thống" onclick="addToClientOrder('Trà Sữa Truyền thống', 25)">
-  <area shape="rect" coords="66,1070,294,1272" title="Trà Sữa Oolong Kem mặn" alt="Trà Sữa Oolong Kem mặn" onclick="addToClientOrder('Trà Sữa Oolong Kem mặn', 30)">
-  <area shape="rect" coords="305,1068,535,1273" title="Trà Sữa Oolong Sương sáo" alt="Trà Sữa Oolong Sương sáo" onclick="addToClientOrder('Trà Sữa Oolong Sương sáo', 30)">
-  <area shape="rect" coords="546,1068,774,1273" title="Matcha Latte" alt="Matcha Latte" onclick="addToClientOrder('Matcha Latte', 30)">
-
-  <area shape="rect" coords="934,247,1291,287" title="Cam ép" alt="Cam ép" onclick="addToClientOrder('Cam ép', 25)">
-  <area shape="rect" coords="937,291,1291,325" title="Cam Cà Rốt" alt="Cam Cà Rốt" onclick="addToClientOrder('Cam Cà Rốt', 25)">
-  <area shape="rect" coords="937,332,1291,371" title="Cam Dứa" alt="Cam Dứa" onclick="addToClientOrder('Cam Dứa', 25)">
-  <area shape="rect" coords="937,377,1294,410" title="Dưa hấu" alt="Dưa hấu" onclick="addToClientOrder('Dưa hấu', 25)">
-  <area shape="rect" coords="940,416,1294,455" title="Cóc" alt="Cóc" onclick="addToClientOrder('Cóc', 25)">
-
-  <area shape="rect" coords="1442,138,1653,323" title="Cafe Đen" alt="Cafe Đen" onclick="addToClientOrder('Cafe Đen', 20)">
-  <area shape="rect" coords="1667,139,1872,322" title="Cafe Nâu đá" alt="Cafe Nâu đá" onclick="addToClientOrder('Cafe Nâu đá', 20)">
-  <area shape="rect" coords="1448,340,1650,520" title="Bạc xỉu" alt="Bạc xỉu" onclick="addToClientOrder('Bạc xỉu', 25)">
-  <area shape="rect" coords="1670,340,1875,526" title="Cafe Kem muối" alt="Cafe Kem muối" onclick="addToClientOrder('Cafe Kem muối', 25)">
-
-  <area shape="rect" coords="909,677,1117,987" title="Sữa chua lắc - Xoài" alt="Sữa chua lắc - Xoài" onclick="addToClientOrder('Sữa chua lắc - Xoài', 30)">
-  <area shape="rect" coords="1145,679,1358,988" title="Sữa chua lắc - Blue Sky" alt="Sữa chua lắc - Blue Sky" onclick="addToClientOrder('Sữa chua lắc - Blue Sky', 30)">
-  <area shape="rect" coords="1386,676,1597,988" title="Sữa chua lắc - Việt quất" alt="Sữa chua lắc - Việt quất" onclick="addToClientOrder('Sữa chua lắc - Việt quất', 30)">
-  <area shape="rect" coords="1625,676,1836,988" title="Sữa chua lắc - Dưa lưới" alt="Sữa chua lắc - Dưa lưới" onclick="addToClientOrder('Sữa chua lắc - Dưa lưới', 30)">
-
-  <area shape="rect" coords="875,1160,1271,1199" title="Hướng Dương" alt="Hướng Dương" onclick="addToClientOrder('Hướng Dương', 10)">
-  <area shape="rect" coords="875,1206,1271,1327" title="Khô bò/gà/heo" alt="Khô bò/gà/heo" onclick="addToClientOrder('Khô bò/gà/heo', 25)">
-
-  <area shape="rect" coords="1515,1164,1889,1198" title="Topping - Nha Đam" alt="Topping - Nha Đam" onclick="addToClientOrder('Nha Đam', 5)">
-  <area shape="rect" coords="1493,1202,1889,1238" title="Topping - Trân Châu" alt="Topping - Trân Châu" onclick="addToClientOrder('Trân Châu', 5)">
-  <area shape="rect" coords="1414,1244,1889,1289" title="Topping - Hạt nổ Yến Mạch" alt="Topping - Hạt nổ Yến Mạch" onclick="addToClientOrder('Hạt nổ Yến Mạch', 5)">
-  <area shape="rect" coords="1442,1296,1889,1332" title="Topping - Thạch Sương Sáo" alt="Topping - Thạch Sương Sáo" onclick="addToClientOrder('Thạch Sương Sáo', 5)">
-</map>
-
-        <div id="order-summary">
-            <h2>Đơn hàng của bạn</h2>
-            <ul id="order-list-client">
-                </ul>
-            <p class="total-client">Tổng cộng: <span id="total-client-display">0</span>K</p>
-
-            <div class="customer-info">
-                <label for="customer-name-input">Tên bạn (hoặc số bàn):</label>
-                <input type="text" id="customer-name-input" placeholder="Ví dụ: Bàn 5" required>
-
-                <label for="notes-input">Ghi chú (tùy chọn):</label>
-                <textarea id="notes-input" rows="3" placeholder="Ví dụ: ít đường, nhiều đá..."></textarea>
-
-                <button class="submit-order-button" onclick="submitOrder()">Gửi đơn hàng</button>
-                <p id="order-message" class="message" style="display: none;"></p>
+        <h1>🍹 La Cà Beverage</h1>
+        
+        <!-- Menu CAFE -->
+        <div class="menu-section">
+            <h2>☕ CAFE</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('ĐEN', 25)">
+                    <div class="item-name">ĐEN</div>
+                    <div class="item-price">25K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('NÂU', 30)">
+                    <div class="item-name">NÂU</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('BẠC XỈU', 30)">
+                    <div class="item-name">BẠC XỈU</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('KEM MUỐI', 35)">
+                    <div class="item-name">KEM MUỐI</div>
+                    <div class="item-price">35K</div>
+                </div>
             </div>
+        </div>
+
+        <!-- Menu NƯỚC ÉP -->
+        <div class="menu-section">
+            <h2>🥤 NƯỚC ÉP</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('CAM', 25)">
+                    <div class="item-name">CAM</div>
+                    <div class="item-price">25K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('CAM CARROT', 30)">
+                    <div class="item-name">CAM CARROT</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('DƯA HẤU', 25)">
+                    <div class="item-name">DƯA HẤU</div>
+                    <div class="item-price">25K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('CAM DỨA', 30)">
+                    <div class="item-name">CAM DỨA</div>
+                    <div class="item-price">30K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu TRÀ -->
+        <div class="menu-section">
+            <h2>🍃 TRÀ</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('NHIỆT ĐỚI', 30)">
+                    <div class="item-name">NHIỆT ĐỚI</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('XOÀI CHANH LEO', 30)">
+                    <div class="item-name">XOÀI CHANH LEO</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('QUÝT', 25)">
+                    <div class="item-name">QUÝT</div>
+                    <div class="item-price">25K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('MĂNG CẦU', 30)">
+                    <div class="item-name">MĂNG CẦU</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('CHANH', 20)">
+                    <div class="item-name">CHANH</div>
+                    <div class="item-price">20K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('VIỆT QUẤT', 35)">
+                    <div class="item-name">VIỆT QUẤT</div>
+                    <div class="item-price">35K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('SEN VÀNG', 25)">
+                    <div class="item-name">SEN VÀNG</div>
+                    <div class="item-price">25K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('CAM DỨA', 30)">
+                    <div class="item-name">CAM DỨA</div>
+                    <div class="item-price">30K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu TRÀ SỮA -->
+        <div class="menu-section">
+            <h2>🧋 TRÀ SỮA</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('KEM MẮN', 35)">
+                    <div class="item-name">KEM MẮN</div>
+                    <div class="item-price">35K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('SƯƠNG SÁO', 30)">
+                    <div class="item-name">SƯƠNG SÁO</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('MATCHA', 35)">
+                    <div class="item-name">MATCHA</div>
+                    <div class="item-price">35K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu SỮA CHUA LẮC -->
+        <div class="menu-section">
+            <h2>🥛 SỮA CHUA LẮC</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('XOÀI', 30)">
+                    <div class="item-name">XOÀI</div>
+                    <div class="item-price">30K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('BLUE SKY', 35)">
+                    <div class="item-name">BLUE SKY</div>
+                    <div class="item-price">35K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('VIỆT QUẤT', 35)">
+                    <div class="item-name">VIỆT QUẤT</div>
+                    <div class="item-price">35K</div>
+                </div>
+                <div class="menu-item" onclick="addToCart('DỨA LƯỜI', 30)">
+                    <div class="item-name">DỨA LƯỜI</div>
+                    <div class="item-price">30K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Giỏ hàng -->
+        <div class="cart-section">
+            <div class="cart-header">🛒 Giỏ hàng</div>
+            <div class="cart-items" id="cartItems">
+                <p style="color: #666; font-style: italic;">Chưa có món nào trong giỏ hàng</p>
+            </div>
+            <div class="total-section">
+                Tổng cộng: <span id="totalAmount">0</span>K
+            </div>
+
+            <!-- Form thông tin -->
+            <div class="form-group">
+                <label for="customerName">Tên khách hàng / Số bàn *</label>
+                <input type="text" id="customerName" placeholder="Ví dụ: Nguyễn Văn A hoặc Bàn 5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Ghi chú (tùy chọn)</label>
+                <textarea id="notes" placeholder="Ghi chú đặc biệt (ít đường, nhiều đá, v.v...)"></textarea>
+            </div>
+
+            <button class="submit-btn" onclick="submitOrder()" id="submitBtn">
+                Gửi đơn hàng
+            </button>
+
+            <div id="message"></div>
         </div>
     </div>
 
     <script>
-        let clientOrder = [];
-        const orderListClient = document.getElementById('order-list-client');
-        const totalClientDisplay = document.getElementById('total-client-display');
-        const customerNameInput = document.getElementById('customer-name-input');
-        const notesInput = document.getElementById('notes-input');
-        const orderMessage = document.getElementById('order-message');
+        // URL Google Apps Script Web App
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpd2Pt2DFrEmiCxPvosEF_QC-SbBrPc1HbB_JW-bOsm_AA9zmh7hETwX9x4pZRWHtlQ/exec';
 
-        // URL của Google Apps Script Web App (sẽ tạo ở Bước 3)
-        // **THAY THẾ BẰNG URL CỦA BẠN SAU KHI TRIỂN KHAI APP SCRIPT**
-        const GOOGLE_APP_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHS_NyU4uGelMhvBQOm6v9e_TrD10tyhY3Cw54gs4QUC_rsLyhOdP41cGQkcUT49GsJQ/exec'; 
+        // Biến giỏ hàng
+        let cart = [];
+        let totalAmount = 0;
 
-        // Hàm được gọi khi click vào các vùng trên ảnh
-        function addToClientOrder(name, price) {
-            clientOrder.push({ name, price });
-            updateClientOrderList();
-            showMessage(`Đã thêm ${name} vào giỏ hàng!`, 'success');
-        }
-
-        // Không cần hàm này nữa vì chúng ta dùng image map thay vì button
-        // document.querySelectorAll('.add-button').forEach(button => {
-        //     button.addEventListener('click', (event) => {
-        //         const name = event.target.dataset.name;
-        //         const price = parseInt(event.target.dataset.price);
-        //         addToClientOrder(name, price);
-        //     });
-        // });
-
-        function removeFromClientOrder(index) {
-            clientOrder.splice(index, 1);
-            updateClientOrderList();
-        }
-
-        function updateClientOrderList() {
-            orderListClient.innerHTML = '';
-            let total = 0;
-
-            const groupedItems = {};
-            clientOrder.forEach(item => {
-                if (groupedItems[item.name]) {
-                    groupedItems[item.name].quantity++;
-                    groupedItems[item.name].totalPrice += item.price;
-                } else {
-                    groupedItems[item.name] = {
-                        name: item.name,
-                        quantity: 1,
-                        unitPrice: item.price,
-                        totalPrice: item.price
-                    };
+        // Function thêm món vào giỏ hàng
+        function addToCart(itemName, itemPrice) {
+            cart.push({
+                name: itemName,
+                price: itemPrice
+            });
+            totalAmount += itemPrice;
+            updateCartDisplay();
+            
+            // Hiệu ứng visual
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.querySelector('.item-name').textContent === itemName) {
+                    item.classList.add('selected');
+                    setTimeout(() => {
+                        item.classList.remove('selected');
+                    }, 300);
                 }
             });
-
-            Object.values(groupedItems).forEach((item, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${item.name} x${item.quantity} (${item.unitPrice}K/món)</span>
-                    <span>${item.totalPrice}K <button class="remove-button" onclick="removeGroupedItem('${item.name}')">Xóa</button></span>
-                `;
-                orderListClient.appendChild(li);
-                total += item.totalPrice;
-            });
-
-            totalClientDisplay.textContent = total;
+            
+            console.log(`Đã thêm ${itemName} - ${itemPrice}K vào giỏ hàng`);
         }
 
-        // Hàm xóa item theo tên (để xóa hết các món cùng loại trong đơn hàng)
-        function removeGroupedItem(itemName) {
-            clientOrder = clientOrder.filter(item => item.name !== itemName);
-            updateClientOrderList();
-        }
-
-        async function submitOrder() {
-            if (clientOrder.length === 0) {
-                showMessage('Vui lòng chọn món trước khi gửi đơn hàng!', 'error');
-                return;
-            }
-
-            const customerName = customerNameInput.value.trim();
-            if (customerName === '') {
-                showMessage('Vui lòng nhập tên bạn hoặc số bàn!', 'error');
-                return;
-            }
-
-            const orderDetails = {
-                customerName: customerName,
-                notes: notesInput.value.trim(),
-                items: clientOrder,
-                total: parseInt(totalClientDisplay.textContent),
-                orderTime: new Date().toLocaleString('vi-VN', {
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    day: '2-digit', month: '2-digit', year: 'numeric'
-                })
-            };
-
-            try {
-                // Sử dụng fetch API để gửi dữ liệu
-                const response = await fetch(GOOGLE_APP_SCRIPT_WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Cần thiết cho Google Apps Script nếu không cấu hình CORS
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderDetails)
+        // Function cập nhật hiển thị giỏ hàng
+        function updateCartDisplay() {
+            const cartItemsElement = document.getElementById('cartItems');
+            const totalElement = document.getElementById('totalAmount');
+            
+            if (cart.length === 0) {
+                cartItemsElement.innerHTML = '<p style="color: #666; font-style: italic;">Chưa có món nào trong giỏ hàng</p>';
+            } else {
+                // Group items theo tên
+                const groupedItems = {};
+                cart.forEach(item => {
+                    if (groupedItems[item.name]) {
+                        groupedItems[item.name].quantity++;
+                        groupedItems[item.name].totalPrice += item.price;
+                    } else {
+                        groupedItems[item.name] = {
+                            name: item.name,
+                            quantity: 1,
+                            unitPrice: item.price,
+                            totalPrice: item.price
+                        };
+                    }
                 });
+                
+                cartItemsElement.innerHTML = Object.values(groupedItems).map(item => 
+                    `<div class="cart-item">
+                        <span>${item.name} x${item.quantity} - ${item.totalPrice}K</span>
+                        <button class="remove-btn" onclick="removeFromCart('${item.name}')">Xóa</button>
+                    </div>`
+                ).join('');
+            }
+            
+            totalElement.textContent = totalAmount;
+        }
 
-                showMessage('Đơn hàng của bạn đã được gửi thành công!', 'success');
-
-                // Clear form after successful submission
-                clientOrder = [];
-                updateClientOrderList();
-                customerNameInput.value = '';
-                notesInput.value = '';
-
-            } catch (error) {
-                console.error('Lỗi khi gửi đơn hàng:', error);
-                showMessage('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!', 'error');
+        // Function xóa món khỏi giỏ hàng
+        function removeFromCart(itemName) {
+            const index = cart.findIndex(item => item.name === itemName);
+            if (index !== -1) {
+                totalAmount -= cart[index].price;
+                cart.splice(index, 1);
+                updateCartDisplay();
+                showMessage(`Đã xóa ${itemName} khỏi giỏ hàng`, 'success');
             }
         }
 
-        function showMessage(msg, type) {
-            orderMessage.textContent = msg;
-            orderMessage.className = 'message ' + (type === 'error' ? 'error-message' : 'success'); // Changed class name for consistency
-            orderMessage.style.display = 'block';
+        // Function hiển thị thông báo
+        function showMessage(message, type = 'error') {
+            const messageElement = document.getElementById('message');
+            messageElement.innerHTML = `<div class="${type}-message">${message}</div>`;
+            
             setTimeout(() => {
-                orderMessage.style.display = 'none';
-            }, 5000); // Ẩn thông báo sau 5 giây
+                messageElement.innerHTML = '';
+            }, 5000);
         }
+
+        // Function gửi đơn hàng
+        function submitOrder() {
+    const customerName = document.getElementById('customerName').value;
+    const notes = document.getElementById('notes').value;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Validation
+    if (!customerName.trim()) {
+        showMessage('Vui lòng nhập tên khách hàng!', 'error');
+        return;
+    }
+    
+    if (cart.length === 0) {
+        showMessage('Vui lòng chọn ít nhất một món!', 'error');
+        return;
+    }
+
+    // Hiển thị loading
+    submitBtn.textContent = 'Đang gửi...';
+    submitBtn.disabled = true;
+    
+    console.log("Preparing to submit order...");
+    console.log("Cart items:", cart);
+    console.log("Customer name:", customerName);
+    console.log("Total:", totalAmount);
+
+    // Tạo form thật sự submit (sẽ redirect sang trang kết quả)
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = SCRIPT_URL;
+    form.target = '_blank'; // Mở tab mới để xem kết quả
+    
+    // Thêm dữ liệu vào form
+    const data = {
+        customerName: customerName.trim(),
+        notes: notes.trim(),
+        items: JSON.stringify(cart),
+        total: totalAmount,
+        orderTime: new Date().toLocaleString('vi-VN')
+    };
+    
+    console.log("Form data:", data);
+    
+    Object.keys(data).forEach(key => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
+    });
+    
+    document.body.appendChild(form);
+    form.submit();
+    
+    // Thông báo và reset
+    showMessage('🎉 Đã gửi đơn hàng! Kiểm tra tab mới để xem kết quả.', 'success');
+    
+    // Reset form sau 2 giây
+    setTimeout(() => {
+        cart = [];
+        totalAmount = 0;
+        updateCartDisplay();
+        document.getElementById('customerName').value = '';
+        document.getElementById('notes').value = '';
+        
+        submitBtn.textContent = 'Gửi đơn hàng';
+        submitBtn.disabled = false;
+        
+        document.body.removeChild(form);
+    }, 2000);
+}
+
+        // Initialize khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+            console.log('🍹 La Cà Beverage System loaded successfully!');
+            console.log('Script URL:', SCRIPT_URL);
+        });
     </script>
 </body>
 </html>
