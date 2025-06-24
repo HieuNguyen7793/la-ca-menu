@@ -467,46 +467,6 @@
     }
 }
 
-/* Mobile specific optimizations */
-@media (max-width: 768px) {
-    .orders-cards {
-        padding: 0;
-        margin: 0;
-    }
-    
-    .order-card {
-        margin-bottom: 6px;
-        padding: 8px;
-        max-height: 120px; /* Còn nhỏ hơn */
-    }
-    
-    .order-details {
-        max-height: 45px; /* Giảm height cho mobile */
-        font-size: 0.7rem;
-    }
-    
-    .order-id {
-        font-size: 0.85rem;
-    }
-    
-    .order-time {
-        font-size: 0.6rem;
-        max-width: 70px;
-    }
-    
-    .status-badge {
-        font-size: 0.6rem;
-        padding: 2px 6px;
-    }
-    
-    .order-actions .btn {
-        padding: 3px 6px;
-        font-size: 0.65rem;
-        min-height: 24px;
-        min-width: 28px;
-    }
-}
-
 /* Extra small screens */
 @media (max-width: 480px) {
     .order-card {
@@ -930,7 +890,6 @@
     </header>
 
     <div class="container">
-        <!-- Thống kê tổng quan -->
         <div class="stats-grid" id="statsGrid">
             <div class="stat-card">
                 <div class="stat-number" id="totalOrders">-</div>
@@ -955,7 +914,6 @@
             </div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="showTab('orders')">📋 Quản lý đơn hàng</button>
             <button class="tab" onclick="showTab('menu')">🍽️ Quản lý menu</button>
@@ -963,11 +921,9 @@
         </div>
 
         <div class="tab-content">
-            <!-- Tab quản lý đơn hàng -->
             <div id="ordersTab" class="tab-pane active">
                 <h2>Danh sách đơn hàng</h2>
-		 <!-- Date Filter Section -->
-    <div class="date-filter-section">
+		 <div class="date-filter-section">
         <div class="filter-controls">
             <div class="filter-group">
                 <label for="dateFilter">Lọc theo ngày:</label>
@@ -995,14 +951,11 @@
         <div class="loading">Đang tải dữ liệu...</div>
     </div>
 </div>
-      	    
             </div>
 
-            <!-- Tab quản lý menu -->
             <div id="menuTab" class="tab-pane">
                 <h2>Quản lý menu</h2>
                 
-                <!-- Form thêm món mới -->
                 <div class="add-item-form">
                     <h3>Thêm món mới</h3>
                     <div style="display: grid; grid-template-columns: 2fr 1fr 2fr 1fr; gap: 1rem; align-items: end;">
@@ -1035,7 +988,6 @@
                 </div>
             </div>
 
-            <!-- Tab thống kê -->
             <div id="analyticsTab" class="tab-pane">
                 <h2>Thống kê chi tiết</h2>
                 <div id="analyticsContent">
@@ -1048,16 +1000,16 @@
     <button class="refresh-btn" onclick="refreshData()" title="Làm mới dữ liệu">🔄</button>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3NiHVvXZJpaw1f4e7VPT4x7YzP85nqULuLsN1DPtYoKLq5Uo9E7wdp-QNCeAUx88s/exec';
-
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpd2Pt2DFrEmiCxPvosEF_QC-SbBrPc1HbB_JW-bOsm_AA9zmh7hETwX9x4pZRWHtlQ/exec';
+        let allOrders = []; // To store all fetched orders
         let currentOrders = [];
         let currentMenu = [];
+        let currentFilter = 'today'; // Default filter
 
         // Khởi tạo khi trang load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🍹 La Cà Admin Dashboard loaded');
             refreshData();
-            
             // Auto refresh mỗi 30 giây
             setInterval(refreshData, 30000);
         });
@@ -1080,7 +1032,6 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
             // Hiển thị tab được chọn
             document.getElementById(tabName + 'Tab').classList.add('active');
             event.target.classList.add('active');
@@ -1091,7 +1042,6 @@
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=getStats`);
                 const result = await response.json();
-                
                 if (result.success) {
                     const stats = result.data;
                     document.getElementById('totalOrders').textContent = stats.totalOrders;
@@ -1106,37 +1056,198 @@
         }
 
         // Sửa function loadOrders để có fallback
-async function loadOrders() {
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getOrders`);
-        const result = await response.json();
-        
-        console.log('Load orders result:', result); // Debug log
-        
-        if (result.success) {
-            currentOrders = result.data;
-            console.log('Orders loaded:', currentOrders.length); // Debug log
-            
-            // Force display
-            if (currentOrders.length > 0) {
-                displayOrders(currentOrders);
-            } else {
-                document.getElementById('ordersContent').innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getOrders`);
+                const result = await response.json();
+                console.log('Load orders result:', result); // Debug log
+                if (result.success) {
+                    allOrders = result.data; // Store all orders
+                    filterOrdersByDate(); // Apply current filter after loading
+                } else {
+                    throw new Error(result.error || 'Failed to load orders');
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersContent').innerHTML = '<div class="error">Lỗi tải đơn hàng: ' + error.message + '</div>';
             }
-        } else {
-            throw new Error(result.error || 'Failed to load orders');
         }
-    } catch (error) {
-        console.error('Error loading orders:', error);
-        document.getElementById('ordersContent').innerHTML = '<div class="error">Lỗi tải đơn hàng: ' + error.message + '</div>';
-    }
-}
+
+        // Date filtering function
+        function filterOrdersByDate() {
+            const filterValue = document.getElementById('dateFilter').value;
+            const customDateInputs = document.getElementById('customDateInputs');
+            const filterStats = document.getElementById('filterStats');
+            
+            currentFilter = filterValue;
+            
+            // Show/hide custom date inputs
+            if (filterValue === 'custom') {
+                customDateInputs.style.display = 'flex';
+                initializeDateInputs();
+            } else {
+                customDateInputs.style.display = 'none';
+            }
+            
+            // Filter orders based on selection
+            let filteredOrders = [];
+            const today = new Date();
+            const todayStr = formatDateForComparison(today);
+            
+            switch (filterValue) {
+                case 'all':
+                    filteredOrders = allOrders;
+                    break;
+                    
+                case 'today':
+                    filteredOrders = allOrders.filter(order => {
+                        const orderDate = extractDateFromOrder(order);
+                        return orderDate === todayStr;
+                    });
+                    break;
+                    
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const yesterdayStr = formatDateForComparison(yesterday);
+                    filteredOrders = allOrders.filter(order => {
+                        const orderDate = extractDateFromOrder(order);
+                        return orderDate === yesterdayStr;
+                    });
+                    break;
+                    
+                case 'this-week':
+                    const startOfWeek = new Date(today);
+                    startOfWeek.setDate(today.getDate() - today.getDay()); // Sunday as first day
+                    startOfWeek.setHours(0,0,0,0); // Normalize to start of day
+                    filteredOrders = allOrders.filter(order => {
+                        const orderDate = new Date(convertOrderDateToDate(order));
+                        orderDate.setHours(0,0,0,0); // Normalize order date to start of day
+                        return orderDate >= startOfWeek && orderDate <= today;
+                    });
+                    break;
+                    
+                case 'custom':
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    
+                    if (startDate && endDate) {
+                        filteredOrders = allOrders.filter(order => {
+                            const orderDate = extractDateFromOrder(order);
+                            return orderDate >= startDate && orderDate <= endDate;
+                        });
+                    } else {
+                        filteredOrders = []; // No custom dates selected yet, show nothing or all depending on desired default
+                    }
+                    break;
+                    
+                default:
+                    filteredOrders = allOrders;
+            }
+            
+            // Update filter stats
+            updateFilterStats(filteredOrders.length, allOrders.length, filterValue);
+            
+            // Display filtered orders
+            currentOrders = filteredOrders; // Update currentOrders after filtering
+            displayOrders(filteredOrders);
+        }
+
+        // Helper functions for date filtering
+        function extractDateFromOrder(order) {
+            const timeStr = order['Thời gian đặt'] || '';
+            // Format: "20:30:45 23/6/2025" or "23/6/2025"
+            const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
+            
+            if (datePart.includes('/')) {
+                const [day, month, year] = datePart.split('/');
+                return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            }
+            
+            return '';
+        }
+
+        function convertOrderDateToDate(order) {
+            const timeStr = order['Thời gian đặt'] || '';
+            const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
+            
+            if (datePart.includes('/')) {
+                const [day, month, year] = datePart.split('/');
+                return new Date(year, month - 1, day);
+            }
+            
+            return new Date();
+        }
+
+        function formatDateForComparison(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function initializeDateInputs() {
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            
+            if (!startDate.value) {
+                const today = new Date();
+                const weekAgo = new Date(today);
+                weekAgo.setDate(today.getDate() - 7);
+                
+                startDate.value = formatDateForComparison(weekAgo);
+                endDate.value = formatDateForComparison(today);
+            }
+        }
+
+        function updateFilterStats(filteredCount, totalCount, filterType) {
+            const filterStats = document.getElementById('filterStats');
+            
+            let message = '';
+            switch (filterType) {
+                case 'all':
+                    message = `Tất cả ${totalCount} đơn hàng`;
+                    break;
+                case 'today':
+                    message = `${filteredCount} đơn hôm nay`;
+                    break;
+                case 'yesterday':
+                    message = `${filteredCount} đơn hôm qua`;
+                    break;
+                case 'this-week':
+                    message = `${filteredCount} đơn tuần này`;
+                    break;
+                case 'custom':
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    if (startDate && endDate) {
+                        message = `${filteredCount} đơn từ ${startDate} đến ${endDate}`;
+                    } else {
+                        message = `Chọn ngày tùy chỉnh`;
+                    }
+                    break;
+                default:
+                    message = `${filteredCount}/${totalCount} đơn hàng`;
+            }
+            
+            filterStats.textContent = message;
+            
+            // Hide if no orders
+            if (filteredCount === 0 && filterType !== 'all') {
+                filterStats.style.background = 'rgba(231, 76, 60, 0.1)';
+                filterStats.style.color = '#e74c3c';
+                filterStats.style.borderColor = 'rgba(231, 76, 60, 0.3)';
+            } else {
+                filterStats.style.background = 'rgba(39, 174, 96, 0.1)';
+                filterStats.style.color = '#27ae60';
+                filterStats.style.borderColor = 'rgba(39, 174, 96, 0.3)';
+            }
+        }
 
 
         // Hiển thị danh sách đơn hàng
         function displayOrders(orders) {
             const container = document.getElementById('ordersContent');
-            
             if (!orders || orders.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
                 return;
@@ -1170,9 +1281,7 @@ async function loadOrders() {
                 const total = order['Tổng tiền (K)'] || '';
                 const notes = order['Ghi chú'] || '';
                 const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
-
-                const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
-                                  status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
+                const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
 
                 html += `
                     <tr>
@@ -1195,13 +1304,25 @@ async function loadOrders() {
             container.innerHTML = html;
         }
 
-        // Cập nhật trạng thái đơn hàng
+	// Cập nhật trạng thái đơn hàng hoặc xóa đơn hàng
         async function updateOrderStatus(orderId, newStatus) {
             try {
                 const formData = new URLSearchParams();
-                formData.append('action', 'updateOrderStatus');
+                let actionType = 'updateOrderStatus'; // Mặc định là cập nhật trạng thái
+
+                if (newStatus === 'Cancelled') {
+                    if (!confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN đơn hàng #${orderId} không? Thao tác này không thể hoàn tác.`)) {
+                        return; // Người dùng hủy bỏ thao tác xóa
+                    }
+                    actionType = 'deleteOrder'; // Đổi action thành 'deleteOrder' nếu là 'Cancelled'
+                }
+
+                formData.append('action', actionType);
                 formData.append('orderId', orderId);
-                formData.append('status', newStatus);
+                // Chỉ thêm status nếu action không phải là 'deleteOrder'
+                if (actionType === 'updateOrderStatus') {
+                    formData.append('status', newStatus);
+                }
 
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -1210,19 +1331,22 @@ async function loadOrders() {
                     },
                     body: formData
                 });
-
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    showMessage('Đã cập nhật trạng thái đơn hàng #' + orderId, 'success');
-                    await loadOrders(); // Reload orders
-                    await loadStats(); // Reload stats
+                    if (actionType === 'deleteOrder') {
+                        showMessage('🗑️ Đã xóa đơn hàng #' + orderId + ' thành công!', 'success');
+                    } else {
+                        showMessage('✅ Đã cập nhật trạng thái đơn hàng #' + orderId, 'success');
+                    }
+                    await loadOrders(); // Tải lại danh sách đơn hàng
+                    await loadStats(); // Tải lại thống kê
                 } else {
-                    throw new Error(result.error || 'Không thể cập nhật');
+                    throw new Error(result.error || 'Không thể thực hiện thao tác');
                 }
             } catch (error) {
-                console.error('Error updating order status:', error);
-                showMessage('Lỗi: ' + error.message, 'error');
+                console.error('Lỗi khi xử lý đơn hàng:', error);
+                showMessage('❌ Lỗi: ' + error.message, 'error');
             }
         }
 
@@ -1231,7 +1355,6 @@ async function loadOrders() {
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=getMenu`);
                 const result = await response.json();
-                
                 if (result.success) {
                     currentMenu = result.data;
                     displayMenu(currentMenu);
@@ -1243,196 +1366,102 @@ async function loadOrders() {
         }
 
         // Sửa lại hàm displayMenu() để hiển thị category
-function displayMenu(menu) {
-    const container = document.getElementById('menuContent');
-    
-    if (!menu || menu.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có món nào trong menu</p>';
-        return;
-    }
-
-    // Group menu theo category
-    const categorized = {};
-    menu.forEach(item => {
-        const name = item['name'] || '';
-        const price = item['price'] || '';
-        const id = item['ID Món'] || '';
-        
-        // Determine category based on menu structure
-        let category = 'KHÁC';
-        if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) {
-            category = 'CAFE';
-        } else if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = 'NƯỚC ÉP';
-        } else if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MÃNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) {
-            category = 'TRÀ';
-        } else if (['KEM MUỐI', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) {
-            category = 'TRÀ SỮA';
-        } else if (['XOÀI', 'BLUE SKY', 'DƯA LƯỚI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = 'SỮA CHUA LẮC';
-        }
-        
-        if (!categorized[category]) {
-            categorized[category] = [];
-        }
-        
-        categorized[category].push({ id, name, price, category });
-    });
-
-    let html = '';
-    
-    // Hiển thị theo từng category
-    Object.keys(categorized).sort().forEach(category => {
-        html += `
-            <div style="margin-bottom: 2rem;">
-                <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                    ${getCategoryIcon(category)} ${category}
-                </h3>
-                <div class="menu-grid">
-        `;
-        
-        categorized[category].forEach(item => {
-            html += `
-                <div class="menu-item-card">
-                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
-                        <h4 style="color: #2c3e50; margin: 0; flex: 1;">${item.name}</h4>
-                        <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${item.category}</span>
-                    </div>
-                    <p style="font-size: 1.2rem; color: #e74c3c; font-weight: bold; margin-bottom: 1rem;">${item.price}K</p>
-                    <div>
-                        <button class="btn btn-primary" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">Sửa</button>
-                        <button class="btn btn-danger" onclick="deleteMenuItem('${item.id}', '${item.name}')">Xóa</button>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += '</div></div>';
-    });
-
-    container.innerHTML = html;
-}
-
-// Function để lấy icon cho category
-function getCategoryIcon(category) {
-    const icons = {
-        'CAFE': '☕',
-        'NƯỚC ÉP': '🥤',
-        'TRÀ': '🍃',
-        'TRÀ SỮA': '🧋',
-        'SỮA CHUA LẮC': '🥛',
-        'KHÁC': '🍹'
-    };
-    return icons[category] || '🍹';
-}
-
-// Function mở dialog sửa món - Cập nhật để sửa cả tên và giá
-function openEditDialog(id, name, price, category) {
-    // Dialog sửa tên
-    const newName = prompt(`Sửa tên món:\n(Hiện tại: ${name})`, name);
-    if (newName === null) return; // User cancelled
-    
-    // Dialog sửa giá
-    const newPrice = prompt(`Sửa giá món (đơn vị: K):\n(Hiện tại: ${price}K)`, price);
-    if (newPrice === null) return; // User cancelled
-    
-    // Validation
-    if (!newName.trim()) {
-        showMessage('Tên món không được để trống!', 'error');
-        return;
-    }
-    
-    if (!newPrice.trim() || isNaN(newPrice) || parseInt(newPrice) <= 0) {
-        showMessage('Giá món phải là số dương!', 'error');
-        return;
-    }
-    
-    // Gọi function cập nhật
-    updateMenuItem(id, newName.trim(), parseInt(newPrice), category);
-}
-
-// Function cập nhật món - Gửi cả tên và giá mới
-async function updateMenuItem(itemId, name, price, category) {
-    try {
-        console.log(`Updating item: ID=${itemId}, Name=${name}, Price=${price}, Category=${category}`);
-        
-        const formData = new URLSearchParams();
-        formData.append('action', 'updateMenuItem');
-        formData.append('itemId', itemId);
-        formData.append('name', name);
-        formData.append('price', price);
-        formData.append('category', category);
-
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            showMessage(`✅ Đã cập nhật món "${name}" - ${price}K thành công!`, 'success');
-            await loadMenu(); // Reload menu để hiển thị thay đổi
-        } else {
-            throw new Error(result.error || 'Không thể cập nhật món');
-        }
-    } catch (error) {
-        console.error('Error updating menu item:', error);
-        showMessage('❌ Lỗi cập nhật món: ' + error.message, 'error');
-    }
-}
-
-// Function xóa món - cập nhật lại
-async function deleteMenuItem(itemId, itemName) {
-    if (!confirm(`Bạn có chắc muốn xóa món "${itemName}"?`)) {
-        return;
-    }
-    
-    try {
-        const formData = new URLSearchParams();
-        formData.append('action', 'deleteMenuItem');
-        formData.append('itemId', itemId);
-
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            showMessage(`Đã xóa món "${itemName}" thành công!`, 'success');
-            await loadMenu(); // Reload menu
-        } else {
-            throw new Error(result.error || 'Không thể xóa món');
-        }
-    } catch (error) {
-        console.error('Error deleting menu item:', error);
-        showMessage('Lỗi: ' + error.message, 'error');
-    }
-}
-
-
-        // Thêm món mới
-        async function addNewMenuItem() {
-            const name = document.getElementById('newItemName').value.trim();
-            const price = document.getElementById('newItemPrice').value.trim();
-            const category = document.getElementById('newItemCategory').value;
-
-            if (!name || !price) {
-                showMessage('Vui lòng nhập đầy đủ tên món và giá!', 'error');
+        function displayMenu(menu) {
+            const container = document.getElementById('menuContent');
+            if (!menu || menu.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có món nào trong menu</p>';
                 return;
             }
 
+            // Group menu theo category
+            const categorized = {};
+            menu.forEach(item => {
+                const name = item['name'] || '';
+                const price = item['price'] || '';
+                const id = item['ID Món'] || '';
+                const category = item['category'] || 'KHÁC'; // Use category directly from item
+
+                if (!categorized[category]) {
+                    categorized[category] = [];
+                }
+                categorized[category].push({ id, name, price, category });
+            });
+
+            let html = '';
+            // Hiển thị theo từng category
+            Object.keys(categorized).sort().forEach(category => {
+                html += `
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                            ${getCategoryIcon(category)} ${category}
+                        </h3>
+                        <div class="menu-grid">
+                `;
+
+                categorized[category].forEach(item => {
+                    html += `
+                        <div class="menu-item-card">
+                            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="color: #2c3e50; margin: 0; flex: 1;">${item.name}</h4>
+                                <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${item.category}</span>
+                            </div>
+                            <p style="font-size: 1.2rem; color: #e74c3c; font-weight: bold; margin-bottom: 1rem;">${item.price}K</p>
+                            <div>
+                                <button class="btn btn-primary" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">Sửa</button>
+                                <button class="btn btn-danger" onclick="deleteMenuItem('${item.id}', '${item.name}')">Xóa</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        // Function để lấy icon cho category
+        function getCategoryIcon(category) {
+            const icons = {
+                'CAFE': '☕',
+                'NƯỚC ÉP': '🥤',
+                'TRÀ': '🍃',
+                'TRÀ SỮA': '🧋',
+                'SỮA CHUA LẮC': '🥛',
+                'KHÁC': '🍹'
+            };
+            return icons[category] || '🍹';
+        }
+
+        // Function mở dialog sửa món - Cập nhật để sửa cả tên và giá
+        function openEditDialog(id, name, price, category) {
+            // Dialog sửa tên
+            const newName = prompt(`Sửa tên món:\n(Hiện tại: ${name})`, name);
+            if (newName === null) return; // User cancelled
+
+            // Dialog sửa giá
+            const newPrice = prompt(`Sửa giá món (đơn vị: K):\n(Hiện tại: ${price}K)`, price);
+            if (newPrice === null) return; // User cancelled
+
+            // Validation
+            if (!newName.trim()) {
+                showMessage('Tên món không được để trống!', 'error');
+                return;
+            }
+            if (!newPrice.trim() || isNaN(newPrice) || parseInt(newPrice) <= 0) {
+                showMessage('Giá món phải là số dương!', 'error');
+                return;
+            }
+
+            // Gọi function cập nhật
+            updateMenuItem(id, newName.trim(), parseInt(newPrice), category);
+        }
+
+        // Function cập nhật món - Gửi cả tên và giá mới
+        async function updateMenuItem(itemId, name, price, category) {
             try {
+                console.log(`Updating item: ID=${itemId}, Name=${name}, Price=${price}, Category=${category}`);
                 const formData = new URLSearchParams();
-                formData.append('action', 'addMenuItem');
+                formData.append('action', 'updateMenuItem');
+                formData.append('itemId', itemId);
                 formData.append('name', name);
                 formData.append('price', price);
                 formData.append('category', category);
@@ -1444,798 +1473,125 @@ async function deleteMenuItem(itemId, itemName) {
                     },
                     body: formData
                 });
-
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    showMessage(`Đã thêm món "${name}" thành công!`, 'success');
-                    
-                    // Reset form
+                    showMessage(`✅ Đã cập nhật món "${name}" - ${price}K thành công!`, 'success');
+                    await loadMenu(); // Reload menu để hiển thị thay đổi
+                } else {
+                    throw new Error(result.error || 'Không thể cập nhật món');
+                }
+            } catch (error) {
+                console.error('Error updating menu item:', error);
+                showMessage('❌ Lỗi cập nhật món: ' + error.message, 'error');
+            }
+        }
+
+        // Function xóa món - cập nhật lại
+        async function deleteMenuItem(itemId, itemName) {
+            if (!confirm(`Bạn có chắc muốn xóa món "${itemName}"?`)) {
+                return;
+            }
+            try {
+                const formData = new URLSearchParams();
+                formData.append('action', 'deleteMenuItem');
+                formData.append('itemId', itemId);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(`🗑️ Đã xóa món "${itemName}" thành công!`, 'success');
+                    await loadMenu(); // Reload menu
+                } else {
+                    throw new Error(result.error || 'Không thể xóa món');
+                }
+            } catch (error) {
+                console.error('Error deleting menu item:', error);
+                showMessage('❌ Lỗi xóa món: ' + error.message, 'error');
+            }
+        }
+
+        // Thêm món mới
+        async function addNewMenuItem() {
+            const name = document.getElementById('newItemName').value.trim();
+            const price = document.getElementById('newItemPrice').value.trim();
+            const category = document.getElementById('newItemCategory').value;
+
+            if (!name) {
+                showMessage('Tên món không được để trống!', 'error');
+                return;
+            }
+            if (!price || isNaN(price) || parseInt(price) <= 0) {
+                showMessage('Giá món phải là số dương!', 'error');
+                return;
+            }
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('action', 'addMenuItem');
+                formData.append('name', name);
+                formData.append('price', parseInt(price));
+                formData.append('category', category);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(`✨ Đã thêm món "${name}" - ${price}K vào menu!`, 'success');
                     document.getElementById('newItemName').value = '';
                     document.getElementById('newItemPrice').value = '';
-                    document.getElementById('newItemCategory').value = 'CAFE';
-                    
-                    // Reload menu
-                    await loadMenu();
+                    document.getElementById('newItemCategory').value = 'CAFE'; // Reset về mặc định
+                    await loadMenu(); // Reload menu
                 } else {
                     throw new Error(result.error || 'Không thể thêm món');
                 }
             } catch (error) {
-                console.error('Error adding menu item:', error);
-                showMessage('Lỗi: ' + error.message, 'error');
+                console.error('Error adding new menu item:', error);
+                showMessage('❌ Lỗi thêm món mới: ' + error.message, 'error');
             }
         }
 
-        // Hiển thị thông báo
+        // Show messages (success/error)
         function showMessage(message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type;
-            messageDiv.textContent = message;
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.top = '20px';
-            messageDiv.style.right = '20px';
-            messageDiv.style.zIndex = '1000';
-            messageDiv.style.maxWidth = '300px';
-            
-            document.body.appendChild(messageDiv);
-            
+            const msgBox = document.createElement('div');
+            msgBox.className = type;
+            msgBox.textContent = message;
+            document.body.appendChild(msgBox);
+
             setTimeout(() => {
-                document.body.removeChild(messageDiv);
-            }, 5000);
+                msgBox.remove();
+            }, 3000);
         }
 
-        // Placeholder functions
-        function editMenuItem(id) {
-            showMessage('Tính năng sửa món sẽ được bổ sung trong phiên bản tiếp theo', 'error');
-        }
-
-        function deleteMenuItem(id) {
-            if (confirm('Bạn có chắc muốn xóa món này?')) {
-                showMessage('Tính năng xóa món sẽ được bổ sung trong phiên bản tiếp theo', 'error');
-            }
-        }
-
-
-	// Enhanced Mobile JavaScript for Admin Dashboard
-
-// Mobile Navigation & Tab Management
-let currentTab = 'orders';
-
-document.addEventListener('DOMContentLoaded', function() {
-    initializeMobileAdmin();
-    refreshData();
-    
-    // Auto refresh every 30 seconds
-    setInterval(refreshData, 30000);
-});
-
-function initializeMobileAdmin() {
-    // Add mobile navigation HTML
-    updateMobileNavigation();
-    
-    // Initialize touch handlers
-    initializeTouchHandlers();
-    
-    // Initialize swipe gestures
-    initializeSwipeGestures();
-    
-    // Handle orientation change
-    window.addEventListener('orientationchange', function() {
-        setTimeout(refreshData, 500);
-    });
-    
-    // Handle visibility change (tab switching)
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            refreshData();
-        }
-    });
-}
-
-function updateMobileNavigation() {
-    // Update tabs for mobile
-    const tabsContainer = document.querySelector('.tabs');
-    if (tabsContainer) {
-        tabsContainer.innerHTML = `
-            <button class="tab ${currentTab === 'orders' ? 'active' : ''}" onclick="showMobileTab('orders')">
-                <div class="tab-icon">📋</div>
-                <div>Đơn hàng</div>
-            </button>
-            <button class="tab ${currentTab === 'menu' ? 'active' : ''}" onclick="showMobileTab('menu')">
-                <div class="tab-icon">🍽️</div>
-                <div>Menu</div>
-            </button>
-            <button class="tab ${currentTab === 'analytics' ? 'active' : ''}" onclick="showMobileTab('analytics')">
-                <div class="tab-icon">📊</div>
-                <div>Thống kê</div>
-            </button>
-        `;
-    }
-}
-
-function showMobileTab(tabName) {
-    currentTab = tabName;
-    
-    // Hide all tab panes
-    document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('active');
-    });
-    
-    // Remove active class from all tabs
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    
-    // Show selected tab pane
-    const targetPane = document.getElementById(tabName + 'Tab');
-    if (targetPane) {
-        targetPane.classList.add('active');
-    }
-    
-    // Add active class to clicked tab
-    event.target.closest('.tab').classList.add('active');
-    
-    // Smooth scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Haptic feedback
-    if (navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-}
-
-// Touch Handlers
-function initializeTouchHandlers() {
-    // Add touch feedback to all interactive elements
-    const interactiveElements = document.querySelectorAll('.btn, .stat-card, .menu-item-card, .tab');
-    
-    interactiveElements.forEach(element => {
-        element.addEventListener('touchstart', function() {
-            this.style.transform = 'scale(0.98)';
-        });
-        
-        element.addEventListener('touchend', function() {
+        // Initialize date filter when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today as default if no filter selected
             setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
+                if (document.getElementById('dateFilter')) {
+                    document.getElementById('dateFilter').value = 'today';
+                    filterOrdersByDate();
+                }
+            }, 1000);
         });
-    });
-}
-
-// Swipe Gestures for Orders
-function initializeSwipeGestures() {
-    let startX, startY, currentX, currentY;
-    let isHorizontalSwipe = false;
-    
-    document.addEventListener('touchstart', function(e) {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        isHorizontalSwipe = false;
-    });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (!startX || !startY) return;
-        
-        currentX = e.touches[0].clientX;
-        currentY = e.touches[0].clientY;
-        
-        const diffX = Math.abs(currentX - startX);
-        const diffY = Math.abs(currentY - startY);
-        
-        if (diffX > diffY && diffX > 50) {
-            isHorizontalSwipe = true;
+        // Helper function for short status - THÊM FUNCTION NÀY
+        function getShortStatus(status) {
+            if (status.toLowerCase().includes('completed')) return 'Xong';
+            if (status.toLowerCase().includes('cancelled')) return 'Hủy';
+            return 'Chờ';
         }
-    });
-    
-    document.addEventListener('touchend', function(e) {
-        if (!isHorizontalSwipe || !startX) return;
-        
-        const diffX = currentX - startX;
-        
-        // Swipe right to go to previous tab
-        if (diffX > 100) {
-            const tabs = ['orders', 'menu', 'analytics'];
-            const currentIndex = tabs.indexOf(currentTab);
-            if (currentIndex > 0) {
-                showMobileTab(tabs[currentIndex - 1]);
-            }
-        }
-        
-        // Swipe left to go to next tab
-        if (diffX < -100) {
-            const tabs = ['orders', 'menu', 'analytics'];
-            const currentIndex = tabs.indexOf(currentTab);
-            if (currentIndex < tabs.length - 1) {
-                showMobileTab(tabs[currentIndex + 1]);
-            }
-        }
-        
-        startX = null;
-        startY = null;
-    });
-}
-
-// Enhanced displayOrders with better mobile detection
-function displayOrders(orders) {
-    const container = document.getElementById('ordersContent');
-    
-    if (!orders || orders.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
-        return;
-    }
-
-    // Sort orders by Order ID descending
-    orders.sort((a, b) => (b['Order ID'] || 0) - (a['Order ID'] || 0));
-
-    // Better mobile detection
-    const isMobile = window.innerWidth <= 768 || window.screen.width <= 768 || 
-                    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    console.log('Display mode:', isMobile ? 'Mobile' : 'Desktop', 'Screen width:', window.innerWidth);
-    
-    if (isMobile) {
-        displayOrdersMobile(orders, container);
-    } else {
-        displayOrdersDesktop(orders, container);
-    }
-}
-// Force mobile view for testing - paste vào Console
-function forceMobileView() {
-    // Override mobile detection
-    window.displayOrders = function(orders) {
-        const container = document.getElementById('ordersContent');
-        if (orders && orders.length > 0) {
-            displayOrdersMobile(orders, container);
-        } else {
-            container.innerHTML = '<p style="text-align: center; padding: 2rem;">Không có đơn hàng</p>';
-        }
-    };
-    
-    // Reload orders in mobile view
-    if (currentOrders && currentOrders.length > 0) {
-        displayOrdersMobile(currentOrders, document.getElementById('ordersContent'));
-    } else {
-        loadOrders();
-    }
-    
-    console.log('✅ Forced mobile view activated');
-}
-
-// Quick test mobile cards
-function testMobileCards() {
-    const testOrders = [
-        {
-            'Order ID': 1,
-            'Thời gian đặt': '20:30:45 23/6/2025',
-            'Tên khách/Số bàn': 'Nguyễn Văn A',
-            'Chi tiết món': 'Cà phê đen x1 (25K) = 25K',
-            'Tổng tiền (K)': 25,
-            'Ghi chú': 'Ít đường',
-            'Trạng thái (Pending/Completed)': 'Pending'
-        }
-    ];
-    
-    displayOrdersMobile(testOrders, document.getElementById('ordersContent'));
-    console.log('✅ Test mobile cards displayed');
-}
-
-// ĐÚNG - Fixed displayOrdersMobile function
-function displayOrdersMobile(orders, container) {
-    console.log('Displaying mobile orders:', orders.length);
-    
-    if (orders.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Chưa có đơn hàng nào</div>';
-        return;
-    }
-    
-    let html = '<div class="orders-cards">';
-    
-    // Limit to 20 orders for performance
-    const limitedOrders = orders.slice(0, 20);
-    
-    limitedOrders.forEach(order => {
-        const orderId = order['Order ID'] || '';
-        const time = order['Thời gian đặt'] || '';
-        const customer = order['Tên khách/Số bàn'] || '';
-        const items = order['Chi tiết món'] || '';
-        const total = order['Tổng tiền (K)'] || '';
-        const notes = order['Ghi chú'] || '';
-        const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
-
-        const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
-                          status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
-
-        // Enhanced items display
-        const itemsArray = items.split(';');
-        const shortItems = itemsArray.length > 2 
-            ? itemsArray.slice(0, 2).join(', ') + ` (+${itemsArray.length - 2} món)` 
-            : items.replace(/;\n/g, ', ');
-        
-        const shortCustomer = customer.length > 20 ? customer.substring(0, 20) + '...' : customer;
-        
-        // Show full notes with better formatting
-        const displayNotes = notes && notes.length > 0 ? notes : '';
-        
-        // Enhanced time format with both date and time
-        const [datePart, timePart] = time.includes(' ') ? time.split(' ') : [time, ''];
-        const displayTime = timePart ? `${datePart}<br><small>${timePart}</small>` : time;
-
-        // FIXED: Button logic - only show buttons for Pending status
-        let actionButtons = '';
-        if (status.toLowerCase() === 'pending') {
-            actionButtons = `
-                <button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')" title="Hoàn thành">✓ Xong</button>
-                <button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')" title="Hủy đơn">✗ Hủy</button>
-            `;
-        } else {
-            // No buttons for completed/cancelled orders
-            actionButtons = '<span style="font-size: 0.7rem; color: #888;">Đã xử lý</span>';
-        }
-
-        html += `
-            <div class="order-card">
-                <div class="order-header">
-                    <div class="order-id">#${orderId}</div>
-                    <div class="order-time">${displayTime}</div>
-                </div>
-                <div class="order-details">
-                    <div style="margin-bottom: 6px;"><strong>Khách:</strong> ${shortCustomer}</div>
-                    <div style="margin-bottom: 6px;"><strong>Món:</strong> ${shortItems}</div>
-                    <div style="color: #e74c3c; font-weight: bold; margin-bottom: 6px;">Tổng: ${total}K</div>
-                    ${displayNotes ? `<div class="order-notes"><strong>Ghi chú:</strong> ${displayNotes}</div>` : ''}
-                </div>
-                <div class="order-footer">
-                    <span class="status-badge ${statusClass}">${getShortStatus(status)}</span>
-                    <div class="order-actions">
-                        ${actionButtons}
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    // Add "Load more" if there are more orders - INSIDE FUNCTION
-    if (orders.length > 20) {
-        html += `
-            <div style="text-align: center; padding: 10px;">
-                <button class="btn btn-primary" onclick="loadMoreOrders()" style="font-size: 0.8rem; padding: 8px 16px;">
-                    Xem thêm ${orders.length - 20} đơn
-                </button>
-            </div>
-        `;
-    }
-    
-    html += '</div>';
-    container.innerHTML = html; // CHỈ set innerHTML 1 lần duy nhất
-} // CHỈ đóng function 1 lần duy nhất// Desktop Table Display (Keep original)
-function displayOrdersDesktop(orders, container) {
-    let html = `
-        <div class="orders-container">
-            <table class="orders-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Thời gian</th>
-                        <th>Khách hàng</th>
-                        <th>Chi tiết món</th>
-                        <th>Tổng tiền</th>
-                        <th>Ghi chú</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-    `;
-
-    orders.forEach(order => {
-        const orderId = order['Order ID'] || '';
-        const time = order['Thời gian đặt'] || '';
-        const customer = order['Tên khách/Số bàn'] || '';
-        const items = order['Chi tiết món'] || '';
-        const total = order['Tổng tiền (K)'] || '';
-        const notes = order['Ghi chú'] || '';
-        const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
-
-        const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
-                          status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
-
-        html += `
-            <tr>
-                <td><strong>#${orderId}</strong></td>
-                <td>${time}</td>
-                <td>${customer}</td>
-                <td style="max-width: 200px; font-size: 0.9rem;">${items.replace(/;\n/g, '<br>')}</td>
-                <td><strong>${total}K</strong></td>
-                <td style="max-width: 150px; font-size: 0.9rem;">${notes}</td>
-                <td><span class="status-badge ${statusClass}">${status}</span></td>
-                <td>
-                    ${status !== 'Completed' ? `<button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')">Hoàn thành</button>` : ''}
-                    ${status !== 'Cancelled' ? `<button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')">Hủy</button>` : ''}
-                </td>
-            </tr>
-        `;
-    });
-
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
-}
-
-// Enhanced updateOrderStatus with loading state
-async function updateOrderStatus(orderId, newStatus) {
-    try {
-        // Show loading state
-        const button = event.target;
-        const originalText = button.textContent;
-        button.textContent = '...';
-        button.disabled = true;
-        
-        // Haptic feedback
-        if (navigator.vibrate) {
-            navigator.vibrate([100, 50, 100]);
-        }
-        
-        const formData = new URLSearchParams();
-        formData.append('action', 'updateOrderStatus');
-        formData.append('orderId', orderId);
-        formData.append('status', newStatus);
-
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            showMessage(`✅ Đã cập nhật đơn hàng #${orderId}`, 'success');
-            await loadOrders();
-            await loadStats();
-        } else {
-            throw new Error(result.error || 'Không thể cập nhật');
-        }
-    } catch (error) {
-        console.error('Error updating order status:', error);
-        showMessage('❌ Lỗi: ' + error.message, 'error');
-        
-        // Reset button
-        button.textContent = originalText;
-        button.disabled = false;
-    }
-}
-
-// Enhanced menu display for mobile
-function displayMenu(menu) {
-    const container = document.getElementById('menuContent');
-    
-    if (!menu || menu.length === 0) {
-        container.innerHTML = '<div class="loading">Chưa có món nào trong menu</div>';
-        return;
-    }
-
-    // Group menu by category
-    const categorized = {};
-    menu.forEach(item => {
-        const name = item['name'] || '';
-        const price = item['price'] || '';
-        const id = item['ID Món'] || '';
-        
-        let category = determineCategory(name);
-        
-        if (!categorized[category]) {
-            categorized[category] = [];
-        }
-        
-        categorized[category].push({ id, name, price, category });
-    });
-
-    let html = '';
-    
-    Object.keys(categorized).sort().forEach(category => {
-        html += `
-            <div style="margin-bottom: 24px;">
-                <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 8px; margin-bottom: 16px; font-size: 1.1rem;">
-                    ${getCategoryIcon(category)} ${category}
-                </h3>
-                <div class="menu-grid">
-        `;
-        
-        categorized[category].forEach(item => {
-            html += `
-                <div class="menu-item-card">
-                    <div class="menu-item-header">
-                        <h4 class="menu-item-name">${item.name}</h4>
-                        <span class="menu-item-category">${item.category}</span>
-                    </div>
-                    <div class="menu-item-price">${item.price}K</div>
-                    <div class="menu-item-actions">
-                        <button class="btn btn-primary" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">Sửa</button>
-                        <button class="btn btn-danger" onclick="deleteMenuItem('${item.id}', '${item.name}')">Xóa</button>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += '</div></div>';
-    });
-
-    container.innerHTML = html;
-}
-
-// Helper functions
-function determineCategory(name) {
-    if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) return 'CAFE';
-    if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) return 'NƯỚC ÉP';
-    if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MĂNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) return 'TRÀ';
-    if (['KEM MẮN', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) return 'TRÀ SỮA';
-    if (['XOÀI', 'BLUE SKY', 'DỨA LƯỜI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) return 'SỮA CHUA LẮC';
-    return 'KHÁC';
-}
-
-function getCategoryIcon(category) {
-    const icons = {
-        'CAFE': '☕',
-        'NƯỚC ÉP': '🥤', 
-        'TRÀ': '🍃',
-        'TRÀ SỮA': '🧋',
-        'SỮA CHUA LẮC': '🥛',
-        'KHÁC': '🍹'
-    };
-    return icons[category] || '🍹';
-}
-
-// Handle screen rotation
-window.addEventListener('resize', function() {
-    if (currentOrders.length > 0) {
-        displayOrders(currentOrders);
-    }
-});
-// Debug function - paste vào Console (F12) để kiểm tra
-function debugOrders() {
-    console.log('Current orders:', currentOrders);
-    console.log('Orders length:', currentOrders ? currentOrders.length : 'undefined');
-    console.log('Is mobile?', window.innerWidth <= 768);
-    
-    if (currentOrders && currentOrders.length > 0) {
-        console.log('First order:', currentOrders[0]);
-        displayOrders(currentOrders);
-    } else {
-        console.log('No orders to display');
-        loadOrders(); // Try reload
-    }
-}
-
-// Auto-reload on window resize
-window.addEventListener('resize', function() {
-    if (currentOrders && currentOrders.length > 0) {
-        setTimeout(() => {
-            displayOrders(currentOrders);
-        }, 100);
-    }
-});
-// Date Filtering Functions
-let allOrders = []; // Store all orders for filtering
-let currentFilter = 'all';
-
-// Enhanced loadOrders to store all orders
-async function loadOrders() {
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getOrders`);
-        const result = await response.json();
-        
-        console.log('Load orders result:', result);
-        
-        if (result.success) {
-            allOrders = result.data; // Store all orders
-            currentOrders = allOrders; // Display all initially
-            console.log('Orders loaded:', allOrders.length);
-            
-            // Apply current filter
-            filterOrdersByDate();
-            
-        } else {
-            throw new Error(result.error || 'Failed to load orders');
-        }
-    } catch (error) {
-        console.error('Error loading orders:', error);
-        document.getElementById('ordersContent').innerHTML = '<div class="error">Lỗi tải đơn hàng: ' + error.message + '</div>';
-    }
-}
-
-// Date filtering function
-function filterOrdersByDate() {
-    const filterValue = document.getElementById('dateFilter').value;
-    const customDateInputs = document.getElementById('customDateInputs');
-    const filterStats = document.getElementById('filterStats');
-    
-    currentFilter = filterValue;
-    
-    // Show/hide custom date inputs
-    if (filterValue === 'custom') {
-        customDateInputs.style.display = 'flex';
-        initializeDateInputs();
-    } else {
-        customDateInputs.style.display = 'none';
-    }
-    
-    // Filter orders based on selection
-    let filteredOrders = [];
-    const today = new Date();
-    const todayStr = formatDateForComparison(today);
-    
-    switch (filterValue) {
-        case 'all':
-            filteredOrders = allOrders;
-            break;
-            
-        case 'today':
-            filteredOrders = allOrders.filter(order => {
-                const orderDate = extractDateFromOrder(order);
-                return orderDate === todayStr;
-            });
-            break;
-            
-        case 'yesterday':
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = formatDateForComparison(yesterday);
-            filteredOrders = allOrders.filter(order => {
-                const orderDate = extractDateFromOrder(order);
-                return orderDate === yesterdayStr;
-            });
-            break;
-            
-        case 'this-week':
-            const startOfWeek = new Date(today);
-            startOfWeek.setDate(today.getDate() - today.getDay());
-            filteredOrders = allOrders.filter(order => {
-                const orderDate = new Date(convertOrderDateToDate(order));
-                return orderDate >= startOfWeek && orderDate <= today;
-            });
-            break;
-            
-        case 'custom':
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            
-            if (startDate && endDate) {
-                filteredOrders = allOrders.filter(order => {
-                    const orderDate = extractDateFromOrder(order);
-                    return orderDate >= startDate && orderDate <= endDate;
-                });
-            } else {
-                filteredOrders = allOrders;
-            }
-            break;
-            
-        default:
-            filteredOrders = allOrders;
-    }
-    
-    // Update filter stats
-    updateFilterStats(filteredOrders.length, allOrders.length, filterValue);
-    
-    // Display filtered orders
-    currentOrders = filteredOrders;
-    displayOrders(filteredOrders);
-}
-
-// Helper functions for date filtering
-function extractDateFromOrder(order) {
-    const timeStr = order['Thời gian đặt'] || '';
-    // Format: "20:30:45 23/6/2025" or "23/6/2025"
-    const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
-    
-    if (datePart.includes('/')) {
-        const [day, month, year] = datePart.split('/');
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-    
-    return '';
-}
-
-function convertOrderDateToDate(order) {
-    const timeStr = order['Thời gian đặt'] || '';
-    const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
-    
-    if (datePart.includes('/')) {
-        const [day, month, year] = datePart.split('/');
-        return new Date(year, month - 1, day);
-    }
-    
-    return new Date();
-}
-
-function formatDateForComparison(date) {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-function initializeDateInputs() {
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
-    
-    if (!startDate.value) {
-        const today = new Date();
-        const weekAgo = new Date(today);
-        weekAgo.setDate(today.getDate() - 7);
-        
-        startDate.value = formatDateForComparison(weekAgo);
-        endDate.value = formatDateForComparison(today);
-    }
-}
-
-function updateFilterStats(filteredCount, totalCount, filterType) {
-    const filterStats = document.getElementById('filterStats');
-    
-    let message = '';
-    switch (filterType) {
-        case 'all':
-            message = `Tất cả ${totalCount} đơn hàng`;
-            break;
-        case 'today':
-            message = `${filteredCount} đơn hôm nay`;
-            break;
-        case 'yesterday':
-            message = `${filteredCount} đơn hôm qua`;
-            break;
-        case 'this-week':
-            message = `${filteredCount} đơn tuần này`;
-            break;
-        case 'custom':
-            message = `${filteredCount} đơn được lọc`;
-            break;
-        default:
-            message = `${filteredCount}/${totalCount} đơn hàng`;
-    }
-    
-    filterStats.textContent = message;
-    
-    // Hide if no orders
-    if (filteredCount === 0 && filterType !== 'all') {
-        filterStats.style.background = 'rgba(231, 76, 60, 0.1)';
-        filterStats.style.color = '#e74c3c';
-        filterStats.style.borderColor = 'rgba(231, 76, 60, 0.3)';
-    } else {
-        filterStats.style.background = 'rgba(39, 174, 96, 0.1)';
-        filterStats.style.color = '#27ae60';
-        filterStats.style.borderColor = 'rgba(39, 174, 96, 0.3)';
-    }
-}
-
-// Initialize date filter when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // ... existing code ...
-    
-    // Set today as default if no filter selected
-    setTimeout(() => {
-        if (document.getElementById('dateFilter')) {
-            document.getElementById('dateFilter').value = 'today';
-            filterOrdersByDate();
-        }
-    }, 1000);
-});
-// Helper function for short status - THÊM FUNCTION NÀY
-function getShortStatus(status) {
-    if (status.toLowerCase().includes('completed')) return 'Xong';
-    if (status.toLowerCase().includes('cancelled')) return 'Hủy';
-    return 'Chờ';
-}
-
-// Load more orders function
-let displayedOrdersCount = 20;
-function loadMoreOrders() {
-    displayedOrdersCount += 20;
-    if (currentOrders) {
-        const container = document.getElementById('ordersContent');
-        displayOrdersMobile(currentOrders.slice(0, displayedOrdersCount), container);
-    }
-}
-
     </script>
 </body>
 </html>
