@@ -1,391 +1,2243 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>La Cà Beverage - Admin Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 1000px; margin: auto; background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #0056b3; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: left; vertical-align: middle; }
-        th { background-color: #e9ecef; color: #555; font-weight: bold; }
-        tr:nth-child(even) { background-color: #f8f8f8; }
-        tr:hover { background-color: #f1f1f1; }
-        .form-container {
-            display: none; /* Hidden by default */
-            margin-top: 20px;
-            padding: 25px;
-            border: 1px solid #ddd;
-            background-color: #fcfcfc;
-            border-radius: 8px;
+    /* Mobile-First Admin Dashboard CSS */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+	/* Date Filter Styles */
+.date-filter-section {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: white;
+}
+
+.custom-date {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-date label {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.custom-date input {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+}
+
+.filter-stats {
+    background: rgba(39, 174, 96, 0.1);
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #27ae60;
+    font-weight: 600;
+    border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+/* Mobile optimizations for filter */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .custom-date {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.5;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+    
+    /* Mobile Header - Sticky Navigation */
+    .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 12px 16px;
+        backdrop-filter: blur(20px);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+        color: #2c3e50;
+        font-size: 1.2rem;
+        text-align: center;
+        font-weight: 700;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 16px;
+        margin: 0;
+    }
+    
+    /* Mobile Stats Grid - 2x2 Layout */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 16px 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.2s ease;
+        backdrop-filter: blur(10px);
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .stat-card:active {
+        transform: scale(0.98);
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #e74c3c;
+        margin-bottom: 4px;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    .stat-note {
+        font-size: 0.65rem;
+        color: #95a5a6;
+        margin-top: 2px;
+        font-style: italic;
+    }
+    
+    /* Mobile Bottom Navigation */
+    .tabs {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        display: flex;
+        z-index: 1000;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .tab {
+        flex: 1;
+        padding: 12px 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        color: #7f8c8d;
+        text-align: center;
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    
+    .tab.active {
+        color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+    }
+    
+    .tab:active {
+        transform: scale(0.95);
+    }
+    
+    .tab-icon {
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+    
+    /* Content Area with Bottom Padding */
+    .tab-content {
+        background: rgba(255, 255, 255, 0.95);
+        margin-bottom: 80px; /* Space for bottom nav */
+        border-radius: 16px 16px 0 0;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        min-height: 60vh;
+    }
+    
+    .tab-pane {
+        display: none;
+        padding: 20px 16px;
+    }
+    
+    .tab-pane.active {
+        display: block;
+    }
+    
+    .tab-pane h2 {
+        font-size: 1.3rem;
+        color: #2c3e50;
+        margin-bottom: 16px;
+        font-weight: 700;
+    }
+    
+    /* Mobile Orders Table */
+    .orders-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -16px;
+        padding: 0 16px;
+    }
+    
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+        min-width: 700px;
+    }
+    
+    .orders-table th,
+    .orders-table td {
+        padding: 12px 8px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+        vertical-align: top;
+    }
+    
+    .orders-table th {
+        background: rgba(248, 249, 250, 0.8);
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 0.75rem;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+    }
+    
+    .orders-table tr:hover {
+        background: rgba(248, 249, 250, 0.5);
+    }
+    
+    /* Ultra Compact Order Cards for Mobile */
+.order-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-left: 3px solid #e74c3c;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+    font-size: 0.8rem;
+    max-height: 140px; /* Giới hạn chiều cao */
+    overflow: hidden;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.order-id {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.order-time {
+    font-size: 0.65rem;
+    color: #7f8c8d;
+    text-align: right;
+    line-height: 1.2;
+    max-width: 80px;
+}
+
+.order-details {
+    font-size: 0.75rem;
+    color: #555;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    max-height: 60px; /* Giới hạn chiều cao details */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.order-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.order-actions .btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-height: 28px;
+    min-width: 32px;
+    border-radius: 4px;
+}
+
+/* Status badges compact */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+/* Enhanced Order Cards with Better Notes Display */
+.order-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid #e74c3c;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+    font-size: 0.8rem;
+    max-height: none; /* Remove height limit for notes */
+    overflow: visible; /* Allow notes to be fully visible */
+}
+
+.order-notes {
+    background: rgba(255, 249, 196, 0.8);
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin: 6px 0;
+    border-left: 2px solid #f39c12;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: #856404;
+    max-height: none; /* Remove height restriction */
+    overflow: visible; /* Show full notes */
+    word-wrap: break-word; /* Handle long text */
+}
+
+.order-details {
+    font-size: 0.75rem;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    max-height: none; /* Remove height restriction */
+    overflow: visible; /* Show all content */
+}
+
+.order-time {
+    font-size: 0.7rem;
+    color: #7f8c8d;
+    text-align: right;
+    line-height: 1.2;
+    max-width: 100px;
+}
+
+.order-time small {
+    color: #95a5a6;
+    font-size: 0.65rem;
+}
+
+/* Enhanced Action Buttons */
+.order-actions .btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    min-height: 26px;
+    min-width: 36px;
+    border-radius: 4px;
+    margin: 0 2px;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+}
+
+/* Mobile specific optimizations */
+@media (max-width: 768px) {
+    .order-card {
+        margin-bottom: 10px;
+        padding: 10px;
+        max-height: none; /* No height limit on mobile */
+    }
+    
+    .order-notes {
+        margin: 8px 0;
+        padding: 8px;
+        font-size: 0.8rem; /* Larger text for notes */
+    }
+    
+    .order-details {
+        max-height: none;
+        font-size: 0.75rem;
+    }
+    
+    .order-time {
+        max-width: 120px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Mobile specific optimizations */
+@media (max-width: 768px) {
+    .orders-cards {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .order-card {
+        margin-bottom: 6px;
+        padding: 8px;
+        max-height: 120px; /* Còn nhỏ hơn */
+    }
+    
+    .order-details {
+        max-height: 45px; /* Giảm height cho mobile */
+        font-size: 0.7rem;
+    }
+    
+    .order-id {
+        font-size: 0.85rem;
+    }
+    
+    .order-time {
+        font-size: 0.6rem;
+        max-width: 70px;
+    }
+    
+    .status-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+    
+    .order-actions .btn {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+        min-height: 24px;
+        min-width: 28px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .order-card {
+        max-height: 100px;
+        padding: 6px;
+        margin-bottom: 4px;
+    }
+    
+    .order-details {
+        max-height: 35px;
+        font-size: 0.65rem;
+    }
+    
+    .order-header {
+        margin-bottom: 4px;
+    }
+    
+    .order-footer {
+        gap: 4px;
+    }
+    
+    .order-actions .btn {
+        padding: 2px 4px;
+        font-size: 0.6rem;
+        min-height: 20px;
+        min-width: 24px;
+    }
+}
+
+    
+    /* Status Badges */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-completed {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    /* Mobile Buttons */
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 2px;
+        transition: all 0.2s ease;
+        min-height: 36px;
+        min-width: 60px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn:active {
+        transform: scale(0.95);
+    }
+    
+    .btn-success {
+        background: #28a745;
+        color: white;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+    
+    /* Menu Management - Mobile Grid */
+    .add-item-form {
+        background: rgba(248, 249, 250, 0.8);
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .add-item-form h3 {
+        margin-bottom: 16px;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+    
+    .form-grid {
+        display: grid;
+        gap: 12px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.9rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 16px; /* Prevent zoom on iOS */
+        background: rgba(255, 255, 255, 0.9);
+        transition: border-color 0.2s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #e74c3c;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    
+    /* Menu Cards Grid */
+    .menu-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 16px;
+    }
+    
+    .menu-item-card {
+        background: rgba(248, 249, 250, 0.8);
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s ease;
+    }
+    
+    .menu-item-card:active {
+        transform: scale(0.98);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .menu-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    .menu-item-name {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 0;
+        flex: 1;
+    }
+    
+    .menu-item-category {
+        background: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    
+    .menu-item-price {
+        font-size: 1.2rem;
+        color: #e74c3c;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    
+    .menu-item-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    /* Loading States */
+    .loading {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .loading::before {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #e74c3c;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Messages */
+    .error, .success {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin: 12px 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        position: fixed;
+        top: 80px;
+        left: 16px;
+        right: 16px;
+        z-index: 2000;
+        animation: slideDown 0.3s ease;
+    }
+    
+    .error {
+        background: rgba(248, 215, 218, 0.95);
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .success {
+        background: rgba(212, 237, 218, 0.95);
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
         }
-        .form-container label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
-        .form-container input[type="text"],
-        .form-container input[type="number"] {
-            width: calc(100% - 24px); /* Account for padding and border */
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .buttons { text-align: right; margin-top: 20px; }
-        .buttons button {
-            padding: 12px 20px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+    }
+    
+    /* Refresh Button */
+    .refresh-btn {
+        position: fixed;
+        top: 80px;
+        right: 16px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        transition: all 0.2s ease;
+        z-index: 999;
+    }
+    
+    .refresh-btn:active {
+        transform: scale(0.9);
+    }
+    
+    /* Swipe Gestures */
+    .swipe-container {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .swipe-actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: #dc3545;
+        color: white;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .swipe-container.swiped .swipe-actions {
+        transform: translateX(0);
+    }
+    
+    /* Tablet Responsive */
+    @media (min-width: 768px) {
+        .container {
+            padding: 20px;
         }
-        .buttons button.save { background-color: #28a745; color: white; }
-        .buttons button.save:hover { background-color: #218838; }
-        .buttons button.delete { background-color: #dc3545; color: white; }
-        .buttons button.delete:hover { background-color: #c82333; }
-        .buttons button.cancel { background-color: #6c757d; color: white; }
-        .buttons button.cancel:hover { background-color: #5a6268; }
         
-        .add-new-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: background-color 0.3s ease;
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
         }
-        .add-new-btn:hover { background-color: #0056b3; }
-
-        .message { margin-top: 20px; padding: 15px; border-radius: 5px; font-size: 15px; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-
-        .action-btns button {
-            padding: 8px 12px;
-            margin-right: 5px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
+        
+        .tabs {
+            position: static;
+            background: white;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-direction: row;
         }
-        .action-btns .edit-btn { background-color: #ffc107; color: #333; }
-        .action-btns .edit-btn:hover { background-color: #e0a800; }
-        .action-btns .delete-btn { background-color: #dc3545; color: white; }
-        .action-btns .delete-btn:hover { background-color: #c82333; }
-
-        #csvOutput {
-            font-family: monospace;
-            white-space: pre;
-            overflow-x: auto;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 10px;
-            line-height: 1.5;
+        
+        .tab {
+            flex-direction: row;
+            gap: 8px;
+            min-height: 50px;
         }
-    </style>
+        
+        .tab-content {
+            margin-bottom: 0;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .menu-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .orders-cards {
+            display: none;
+        }
+        
+        .orders-table {
+            min-width: auto;
+        }
+    }
+    
+    /* Desktop Responsive */
+    @media (min-width: 1024px) {
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+        
+        .menu-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .form-grid {
+            grid-template-columns: 2fr 1fr 2fr 1fr;
+            align-items: end;
+        }
+    }
+    
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+        
+        .header,
+        .tab-content,
+        .stat-card,
+        .tabs {
+            background: rgba(52, 73, 94, 0.95);
+            color: #ecf0f1;
+        }
+        
+        .tab-pane h2,
+        .stat-number,
+        .order-id,
+        .menu-item-name {
+            color: #ecf0f1;
+        }
+    }
+    
+    /* iPhone X+ Safe Area */
+    @supports (padding: max(0px)) {
+        .header {
+            padding-top: max(12px, env(safe-area-inset-top));
+        }
+        
+        .tabs {
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+    }
+    
+    /* Hide scrollbars on mobile */
+    .orders-container::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .orders-container {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
 </head>
 <body>
+    <header class="header">
+        <h1>🍹 La Cà Beverage - Admin Dashboard</h1>
+    </header>
+
     <div class="container">
-        <h1>Admin Panel - Quản lý Menu</h1>
-
-        <button id="addNewBtn" class="add-new-btn">Thêm Món Mới</button>
-
-        <div id="dataTableContainer" class="data-table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Món</th>
-                        <th>Tên Món</th>
-                        <th>Giá (K)</th>
-                        <th>Danh mục</th>
-                        <th>Icon</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="item-table-body">
-                    </tbody>
-            </table>
+        <!-- Thống kê tổng quan -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">-</div>
+                <div class="stat-label">Tổng đơn hàng</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">-K</div>
+                <div class="stat-label">Doanh thu thực tế</div>
+                <div class="stat-note">(Chỉ đơn hoàn thành)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingOrders">-</div>
+                <div class="stat-label">Đang chờ xử lý</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedOrders">-</div>
+                <div class="stat-label">Đã hoàn thành</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="cancelledOrders">-</div>
+                <div class="stat-label">Đã hủy</div>
+            </div>
         </div>
 
-        <div id="formContainer" class="form-container">
-            <h2>Chỉnh sửa/Thêm Món</h2>
-            <form id="itemForm">
-                <label for="item-id">ID Món:</label>
-                <input type="text" id="item-id" readonly><br>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('orders')">📋 Quản lý đơn hàng</button>
+            <button class="tab" onclick="showTab('menu')">🍽️ Quản lý menu</button>
+            <button class="tab" onclick="showTab('analytics')">📊 Thống kê</button>
+        </div>
 
-                <label for="item-name">Tên Món:</label>
-                <input type="text" id="item-name" required><br>
-
-                <label for="item-price">Giá (K):</label>
-                <input type="number" id="item-price" required><br>
-
-                <label for="item-category">Danh mục:</label>
-                <input type="text" id="item-category"><br>
-
-                <label for="item-icon">Icon:</label>
-                <input type="text" id="item-icon"><br>
-
-                <div class="buttons">
-                    <button type="button" id="saveBtn" class="save">Lưu</button>
-                    <button type="button" id="deleteBtn" class="delete">Xóa</button>
-                    <button type="button" id="cancelBtn" class="cancel">Hủy</button>
+        <div class="tab-content">
+            <!-- Tab quản lý đơn hàng -->
+            <div id="ordersTab" class="tab-pane active">
+                <h2>Danh sách đơn hàng</h2>
+		 <!-- Date Filter Section -->
+    <div class="date-filter-section">
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="dateFilter">Lọc theo ngày:</label>
+                <select id="dateFilter" onchange="filterOrdersByDate()">
+                    <option value="all">Tất cả đơn hàng</option>
+                    <option value="today">Hôm nay</option>
+                    <option value="yesterday">Hôm qua</option>
+                    <option value="this-week">Tuần này</option>
+                    <option value="custom">Chọn ngày tùy chỉnh</option>
+                </select>
+            </div>
+            
+            <div class="filter-group custom-date" id="customDateInputs" style="display: none;">
+                <label for="startDate">Từ ngày:</label>
+                <input type="date" id="startDate" onchange="filterOrdersByDate()">
+                <label for="endDate">Đến ngày:</label>
+                <input type="date" id="endDate" onchange="filterOrdersByDate()">
+            </div>
+            
+            <div class="filter-stats" id="filterStats"></div>
+        </div>
+    </div>
+    
+    <div id="ordersContent">
+        <div class="loading">Đang tải dữ liệu...</div>
+    </div>
+</div>
+                <div id="ordersContent">
+                    <div class="loading">Đang tải dữ liệu...</div>
                 </div>
-            </form>
-        </div>
+            </div>
 
-        <div id="messageDisplay" class="message warning" style="display:none;">
-            <p>Lưu ý quan trọng: Các thay đổi bạn thực hiện ở đây chỉ có hiệu lực trong trình duyệt của bạn. Để lưu các thay đổi này vĩnh viễn vào Google Sheet, bạn cần phải sao chép dữ liệu từ nút "Tạo CSV để cập nhật thủ công" và **dán đè thủ công vào Google Sheet gốc**, sau đó **xuất bản lại sheet**.</p>
-            <p>Việc ghi trực tiếp từ trang web vào Google Sheet yêu cầu một hệ thống backend (ví dụ: Google Apps Script hoặc server riêng), điều này phức tạp hơn nhiều.</p>
-        </div>
-        <button id="generateCsvBtn" class="add-new-btn" style="margin-top: 20px; background-color: #4CAF50;">Tạo CSV để cập nhật thủ công</button>
-        <textarea id="csvOutput" style="width: 100%; height: 200px; margin-top: 10px; display: none;" readonly></textarea>
+            <!-- Tab quản lý menu -->
+            <div id="menuTab" class="tab-pane">
+                <h2>Quản lý menu</h2>
+                
+                <!-- Form thêm món mới -->
+                <div class="add-item-form">
+                    <h3>Thêm món mới</h3>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 2fr 1fr; gap: 1rem; align-items: end;">
+                        <div class="form-group">
+                            <label for="newItemName">Tên món</label>
+                            <input type="text" id="newItemName" placeholder="VD: Trà sữa matcha">
+                        </div>
+                        <div class="form-group">
+                            <label for="newItemPrice">Giá (K)</label>
+                            <input type="number" id="newItemPrice" placeholder="35">
+                        </div>
+                        <div class="form-group">
+                            <label for="newItemCategory">Danh mục</label>
+                            <select id="newItemCategory">
+                                <option value="CAFE">☕ CAFE</option>
+                                <option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
+                                <option value="TRÀ">🍃 TRÀ</option>
+                                <option value="TRÀ SỮA">🧋 TRÀ SỮA</option>
+                                <option value="SỮA CHUA LẮC">🥛 SỮA CHUA LẮC</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" onclick="addNewMenuItem()">Thêm món</button>
+                        </div>
+                    </div>
+                </div>
 
+                <div id="menuContent">
+                    <div class="loading">Đang tải menu...</div>
+                </div>
+            </div>
+
+            <!-- Tab thống kê -->
+            <div id="analyticsTab" class="tab-pane">
+                <h2>Thống kê chi tiết</h2>
+                <div id="analyticsContent">
+                    <div class="loading">Đang tải thống kê...</div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <button class="refresh-btn" onclick="refreshData()" title="Làm mới dữ liệu">🔄</button>
+
     <script>
-        // ** THAY THẾ BẰNG URL CSV CỦA BẠN TỪ GOOGLE SHEET ĐÃ XUẤT BẢN **
-        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSv_PxGRr5CBEBhqfDB5C4qyMkERf6OMa2mKHQRadetWH4FJtf_pV7lEoggCM0BXBurpc93HfP2lFRs/pub?gid=0&single=true&output=csv'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqpd2Pt2DFrEmiCxPvosEF_QC-SbBrPc1HbB_JW-bOsm_AA9zmh7hETwX9x4pZRWHtlQ/exec';
 
-        let menuData = []; // Dữ liệu menu sẽ được lưu trữ ở đây
-        let activeRow = null; // Dùng để theo dõi hàng đang được chỉnh sửa
+        let currentOrders = [];
+        let currentMenu = [];
 
-        // Lấy các phần tử DOM
-        const dataTableContainer = document.getElementById('dataTableContainer');
-        const formContainer = document.getElementById('formContainer');
-        const itemForm = document.getElementById('itemForm');
-        const itemTableBody = document.getElementById('item-table-body');
-        const addNewBtn = document.getElementById('addNewBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const messageDisplay = document.getElementById('messageDisplay');
-        const generateCsvBtn = document.getElementById('generateCsvBtn');
-        const csvOutput = document.getElementById('csvOutput');
-
-        // Input fields
-        const itemIdInput = document.getElementById('item-id');
-        const itemNameInput = document.getElementById('item-name');
-        const itemPriceInput = document.getElementById('item-price');
-        const itemCategoryInput = document.getElementById('item-category');
-        const itemIconInput = document.getElementById('item-icon');
-
-        // Hàm chuyển đổi CSV thành JSON
-        function csvToJson(csv) {
-            const lines = csv.split('\n');
-            const result = [];
-            // Lấy tiêu đề cột, loại bỏ ký tự carriage return nếu có
-            const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
-
-            for (let i = 1; i < lines.length; i++) {
-                const currentline = lines[i].split(',');
-                if (currentline.length === headers.length) { // Đảm bảo dòng có đủ số cột
-                    const obj = {};
-                    for (let j = 0; j < headers.length; j++) {
-                        // Xử lý giá trị trong dấu ngoặc kép và loại bỏ khoảng trắng thừa
-                        let value = currentline[j] ? currentline[j].trim() : '';
-                        if (value.startsWith('"') && value.endsWith('"')) {
-                            value = value.substring(1, value.length - 1); // Bỏ dấu ngoặc kép
-                        }
-                        obj[headers[j]] = value;
-                    }
-                    result.push(obj);
-                }
-            }
-            return result;
-        }
-
-        // Hàm tải dữ liệu từ Google Sheet
-        async function loadDataFromSheet() {
-            try {
-                const response = await fetch(googleSheetUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const csvText = await response.text();
-                menuData = csvToJson(csvText);
-                renderTable(menuData);
-                showMessage('Dữ liệu đã được tải thành công.', 'success');
-            } catch (error) {
-                console.error('Lỗi khi tải dữ liệu từ Google Sheet:', error);
-                showMessage(`Không thể tải dữ liệu: ${error.message}. Vui lòng kiểm tra URL và kết nối mạng.`, 'error');
-            }
-        }
-
-        // Hàm hiển thị dữ liệu ra bảng
-        function renderTable(data) {
-            itemTableBody.innerHTML = ''; // Xóa nội dung cũ
-            if (data.length === 0) {
-                itemTableBody.innerHTML = '<tr><td colspan="6">Không có dữ liệu.</td></tr>';
-                return;
-            }
-
-            data.forEach((item, index) => {
-                const row = itemTableBody.insertRow();
-                row.dataset.index = index; // Lưu index của item trong mảng để dễ chỉnh sửa/xóa
-
-                row.insertCell().textContent = item['ID Món'] || ''; // Cột ID Món
-                row.insertCell().textContent = item.name || ''; // Cột Tên Món
-                row.insertCell().textContent = `${item.price || '0'}K`; // Cột Giá
-                row.insertCell().textContent = item.category || ''; // Cột Danh mục
-                row.insertCell().textContent = item.category_icon || ''; // Cột Icon
-
-                const actionsCell = row.insertCell();
-                actionsCell.classList.add('action-btns');
-                
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Sửa';
-                editButton.classList.add('edit-btn');
-                editButton.onclick = () => editItem(row);
-                actionsCell.appendChild(editButton);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Xóa';
-                deleteButton.classList.add('delete-btn');
-                deleteButton.onclick = () => deleteItem(row);
-                actionsCell.appendChild(deleteButton);
-            });
-            showMessage('Lưu ý: Các thay đổi chỉ có hiệu lực trên trình duyệt của bạn. Để lưu thực sự vào Google Sheet, bạn cần xuất bản lại hoặc sử dụng một hệ thống backend.', 'warning');
-            csvOutput.style.display = 'none'; // Ẩn CSV output khi bảng được render lại
-        }
-
-        // Hàm hiển thị form chỉnh sửa/thêm
-        function showForm() {
-            dataTableContainer.style.display = 'none';
-            addNewBtn.style.display = 'none';
-            formContainer.style.display = 'block';
-            deleteBtn.style.display = activeRow ? 'inline-block' : 'none'; // Hiện nút xóa nếu đang sửa, ẩn nếu thêm mới
-            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ form
-        }
-
-        // Hàm ẩn form và hiển thị bảng
-        function hideForm() {
-            dataTableContainer.style.display = 'block';
-            addNewBtn.style.display = 'inline-block';
-            formContainer.style.display = 'none';
-            itemForm.reset(); // Xóa dữ liệu trong form
-            activeRow = null; // Đặt lại activeRow
-            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ bảng
-        }
-
-        // Hàm điền dữ liệu vào form khi click Sửa
-        function editItem(row) {
-            activeRow = row;
-            const index = parseInt(row.dataset.index);
-            const item = menuData[index];
-
-            itemIdInput.value = item['ID Món'] || '';
-            itemNameInput.value = item.name || '';
-            itemPriceInput.value = parseInt(item.price) || ''; // Convert to number
-            itemCategoryInput.value = item.category || '';
-            itemIconInput.value = item.category_icon || '';
+        // Khởi tạo khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🍹 La Cà Admin Dashboard loaded');
+            refreshData();
             
-            showForm();
+            // Auto refresh mỗi 30 giây
+            setInterval(refreshData, 30000);
+        });
+
+        // Làm mới tất cả dữ liệu
+        async function refreshData() {
+            await Promise.all([
+                loadStats(),
+                loadOrders(),
+                loadMenu()
+            ]);
         }
 
-        // Hàm xóa món
-        function deleteItem(row) {
-            if (!confirm('Bạn có chắc chắn muốn xóa món này?')) {
-                return;
-            }
-
-            const index = parseInt(row.dataset.index);
-            menuData.splice(index, 1); // Xóa khỏi mảng menuData
-            renderTable(menuData); // Render lại bảng
-            hideForm();
-            showMessage('Đã xóa món khỏi danh sách (tạm thời trong trình duyệt).', 'warning');
+        // Hiển thị tab
+        function showTab(tabName) {
+            // Ẩn tất cả tab
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Hiển thị tab được chọn
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
         }
 
-        // Hàm lưu (thêm mới hoặc cập nhật)
-        function saveItem() {
-            const newItem = {
-                'ID Món': itemIdInput.value.trim(),
-                'name': itemNameInput.value.trim(),
-                'price': parseInt(itemPriceInput.value) || 0,
-                'category': itemCategoryInput.value.trim(),
-                'category_icon': itemIconInput.value.trim()
-            };
-
-            if (!newItem.name || !newItem.price) {
-                showMessage('Tên món và Giá không được để trống!', 'error');
-                return;
+        // Load thống kê - ĐÃ SỬA ĐỂ HIỂN THỊ CẢ ĐỠN HỦY
+        async function loadStats() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getStats`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const stats = result.data;
+                    document.getElementById('totalOrders').textContent = stats.totalOrders;
+                    document.getElementById('totalRevenue').textContent = stats.totalRevenue + 'K';
+                    document.getElementById('pendingOrders').textContent = stats.pendingOrders;
+                    document.getElementById('completedOrders').textContent = stats.completedOrders;
+                    document.getElementById('cancelledOrders').textContent = stats.cancelledOrders || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
             }
+        }
 
-            if (activeRow) {
-                // Cập nhật món đã có
-                const index = parseInt(activeRow.dataset.index);
-                menuData[index] = newItem;
-                showMessage('Đã cập nhật món (tạm thời trong trình duyệt).', 'warning');
+        // Sửa function loadOrders để có fallback
+async function loadOrders() {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=getOrders`);
+        const result = await response.json();
+        
+        console.log('Load orders result:', result); // Debug log
+        
+        if (result.success) {
+            currentOrders = result.data;
+            console.log('Orders loaded:', currentOrders.length); // Debug log
+            
+            // Force display
+            if (currentOrders.length > 0) {
+                displayOrders(currentOrders);
             } else {
-                // Thêm món mới
-                // Tạo ID mới tự động: max ID hiện có + 1
-                const maxId = menuData.reduce((max, item) => Math.max(max, parseInt(item['ID Món'] || 0)), 0);
-                newItem['ID Món'] = (maxId + 1).toString(); // Chuyển lại thành chuỗi
-                menuData.push(newItem);
-                showMessage('Đã thêm món mới (tạm thời trong trình duyệt).', 'warning');
+                document.getElementById('ordersContent').innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
             }
-            renderTable(menuData); // Render lại bảng với dữ liệu mới
-            hideForm();
+        } else {
+            throw new Error(result.error || 'Failed to load orders');
         }
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersContent').innerHTML = '<div class="error">Lỗi tải đơn hàng: ' + error.message + '</div>';
+    }
+}
 
-        // Hàm thêm món mới
-        function addNewItem() {
-            activeRow = null; // Đặt activeRow về null để biết là đang thêm mới
-            itemForm.reset(); // Xóa sạch form
-            itemIdInput.value = 'Tự động'; // Hoặc để trống nếu bạn muốn tự gán
-            showForm();
-        }
 
-        // Hàm hiển thị thông báo
-        function showMessage(msg, type) {
-            messageDisplay.textContent = msg;
-            messageDisplay.className = `message ${type}`; // Đổi class để đổi màu
-            messageDisplay.style.display = 'block';
-            if (type === 'success' || type === 'error') {
-                 setTimeout(() => {
-                    messageDisplay.style.display = 'block'; // Giữ lại thông báo warning
-                }, 5000); // Tự động ẩn sau 5s nếu là success/error
+        // Hiển thị danh sách đơn hàng
+        function displayOrders(orders) {
+            const container = document.getElementById('ordersContent');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
+                return;
             }
-        }
 
-        // Hàm tạo chuỗi CSV từ dữ liệu hiện tại
-        function generateCsv() {
-            const headers = ['ID Món', 'name', 'price', 'category', 'category_icon'];
-            let csvContent = headers.map(header => `"${header}"`).join(',') + '\n';
+            // Sắp xếp theo Order ID giảm dần (mới nhất trước)
+            orders.sort((a, b) => (b['Order ID'] || 0) - (a['Order ID'] || 0));
 
-            menuData.forEach(item => {
-                const row = headers.map(header => {
-                    let value = item[header] !== undefined && item[header] !== null ? item[header].toString().replace(/"/g, '""') : '';
-                    if (value.includes(',') || value.includes('\n') || value.includes('"') || value.trim() !== value) {
-                        return `"${value}"`; // Bọc trong dấu ngoặc kép nếu có ký tự đặc biệt
-                    }
-                    return value;
-                }).join(',');
-                csvContent += row + '\n';
+            let html = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Thời gian</th>
+                            <th>Khách hàng</th>
+                            <th>Chi tiết món</th>
+                            <th>Tổng tiền</th>
+                            <th>Ghi chú</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            orders.forEach(order => {
+                const orderId = order['Order ID'] || '';
+                const time = order['Thời gian đặt'] || '';
+                const customer = order['Tên khách/Số bàn'] || '';
+                const items = order['Chi tiết món'] || '';
+                const total = order['Tổng tiền (K)'] || '';
+                const notes = order['Ghi chú'] || '';
+                const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
+
+                const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
+                                  status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
+
+                html += `
+                    <tr>
+                        <td><strong>#${orderId}</strong></td>
+                        <td>${time}</td>
+                        <td>${customer}</td>
+                        <td style="max-width: 200px; font-size: 0.9rem;">${items.replace(/;\n/g, '<br>')}</td>
+                        <td><strong>${total}K</strong></td>
+                        <td style="max-width: 150px; font-size: 0.9rem;">${notes}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>
+                            ${status !== 'Completed' ? `<button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')">Hoàn thành</button>` : ''}
+                            ${status !== 'Cancelled' ? `<button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')">Hủy</button>` : ''}
+                        </td>
+                    </tr>
+                `;
             });
 
-            csvOutput.value = csvContent;
-            csvOutput.style.display = 'block';
-            csvOutput.select(); // Chọn toàn bộ nội dung để dễ dàng sao chép
-            showMessage('Vui lòng sao chép nội dung bên dưới và dán vào Google Sheet của bạn. Sau đó, đừng quên "Xuất bản lên web" lại Google Sheet!', 'success');
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Cập nhật trạng thái đơn hàng
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const formData = new URLSearchParams();
+                formData.append('action', 'updateOrderStatus');
+                formData.append('orderId', orderId);
+                formData.append('status', newStatus);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Đã cập nhật trạng thái đơn hàng #' + orderId, 'success');
+                    await loadOrders(); // Reload orders
+                    await loadStats(); // Reload stats
+                } else {
+                    throw new Error(result.error || 'Không thể cập nhật');
+                }
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showMessage('Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Load menu
+        async function loadMenu() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getMenu`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentMenu = result.data;
+                    displayMenu(currentMenu);
+                }
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                document.getElementById('menuContent').innerHTML = '<div class="error">Lỗi tải menu: ' + error.message + '</div>';
+            }
+        }
+
+        // Sửa lại hàm displayMenu() để hiển thị category
+function displayMenu(menu) {
+    const container = document.getElementById('menuContent');
+    
+    if (!menu || menu.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có món nào trong menu</p>';
+        return;
+    }
+
+    // Group menu theo category
+    const categorized = {};
+    menu.forEach(item => {
+        const name = item['Tên Món'] || '';
+        const price = item['Giá (K)'] || '';
+        const id = item['ID Món'] || '';
+        
+        // Determine category based on menu structure
+        let category = 'KHÁC';
+        if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) {
+            category = 'CAFE';
+        } else if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
+            category = 'NƯỚC ÉP';
+        } else if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MĂNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) {
+            category = 'TRÀ';
+        } else if (['KEM MẮN', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) {
+            category = 'TRÀ SỮA';
+        } else if (['XOÀI', 'BLUE SKY', 'DỨA LƯỜI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
+            category = 'SỮA CHUA LẮC';
+        }
+        
+        if (!categorized[category]) {
+            categorized[category] = [];
+        }
+        
+        categorized[category].push({ id, name, price, category });
+    });
+
+    let html = '';
+    
+    // Hiển thị theo từng category
+    Object.keys(categorized).sort().forEach(category => {
+        html += `
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    ${getCategoryIcon(category)} ${category}
+                </h3>
+                <div class="menu-grid">
+        `;
+        
+        categorized[category].forEach(item => {
+            html += `
+                <div class="menu-item-card">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="color: #2c3e50; margin: 0; flex: 1;">${item.name}</h4>
+                        <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">${item.category}</span>
+                    </div>
+                    <p style="font-size: 1.2rem; color: #e74c3c; font-weight: bold; margin-bottom: 1rem;">${item.price}K</p>
+                    <div>
+                        <button class="btn btn-primary" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">Sửa</button>
+                        <button class="btn btn-danger" onclick="deleteMenuItem('${item.id}', '${item.name}')">Xóa</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+    });
+
+    container.innerHTML = html;
+}
+
+// Function để lấy icon cho category
+function getCategoryIcon(category) {
+    const icons = {
+        'CAFE': '☕',
+        'NƯỚC ÉP': '🥤',
+        'TRÀ': '🍃',
+        'TRÀ SỮA': '🧋',
+        'SỮA CHUA LẮC': '🥛',
+        'KHÁC': '🍹'
+    };
+    return icons[category] || '🍹';
+}
+
+// Function mở dialog sửa món - Cập nhật để sửa cả tên và giá
+function openEditDialog(id, name, price, category) {
+    // Dialog sửa tên
+    const newName = prompt(`Sửa tên món:\n(Hiện tại: ${name})`, name);
+    if (newName === null) return; // User cancelled
+    
+    // Dialog sửa giá
+    const newPrice = prompt(`Sửa giá món (đơn vị: K):\n(Hiện tại: ${price}K)`, price);
+    if (newPrice === null) return; // User cancelled
+    
+    // Validation
+    if (!newName.trim()) {
+        showMessage('Tên món không được để trống!', 'error');
+        return;
+    }
+    
+    if (!newPrice.trim() || isNaN(newPrice) || parseInt(newPrice) <= 0) {
+        showMessage('Giá món phải là số dương!', 'error');
+        return;
+    }
+    
+    // Gọi function cập nhật
+    updateMenuItem(id, newName.trim(), parseInt(newPrice), category);
+}
+
+// Function cập nhật món - Gửi cả tên và giá mới
+async function updateMenuItem(itemId, name, price, category) {
+    try {
+        console.log(`Updating item: ID=${itemId}, Name=${name}, Price=${price}, Category=${category}`);
+        
+        const formData = new URLSearchParams();
+        formData.append('action', 'updateMenuItem');
+        formData.append('itemId', itemId);
+        formData.append('name', name);
+        formData.append('price', price);
+        formData.append('category', category);
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage(`✅ Đã cập nhật món "${name}" - ${price}K thành công!`, 'success');
+            await loadMenu(); // Reload menu để hiển thị thay đổi
+        } else {
+            throw new Error(result.error || 'Không thể cập nhật món');
+        }
+    } catch (error) {
+        console.error('Error updating menu item:', error);
+        showMessage('❌ Lỗi cập nhật món: ' + error.message, 'error');
+    }
+}
+
+// Function xóa món - cập nhật lại
+async function deleteMenuItem(itemId, itemName) {
+    if (!confirm(`Bạn có chắc muốn xóa món "${itemName}"?`)) {
+        return;
+    }
+    
+    try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'deleteMenuItem');
+        formData.append('itemId', itemId);
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage(`Đã xóa món "${itemName}" thành công!`, 'success');
+            await loadMenu(); // Reload menu
+        } else {
+            throw new Error(result.error || 'Không thể xóa món');
+        }
+    } catch (error) {
+        console.error('Error deleting menu item:', error);
+        showMessage('Lỗi: ' + error.message, 'error');
+    }
+}
+
+
+        // Thêm món mới
+        async function addNewMenuItem() {
+            const name = document.getElementById('newItemName').value.trim();
+            const price = document.getElementById('newItemPrice').value.trim();
+            const category = document.getElementById('newItemCategory').value;
+
+            if (!name || !price) {
+                showMessage('Vui lòng nhập đầy đủ tên món và giá!', 'error');
+                return;
+            }
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('action', 'addMenuItem');
+                formData.append('name', name);
+                formData.append('price', price);
+                formData.append('category', category);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`Đã thêm món "${name}" thành công!`, 'success');
+                    
+                    // Reset form
+                    document.getElementById('newItemName').value = '';
+                    document.getElementById('newItemPrice').value = '';
+                    document.getElementById('newItemCategory').value = 'CAFE';
+                    
+                    // Reload menu
+                    await loadMenu();
+                } else {
+                    throw new Error(result.error || 'Không thể thêm món');
+                }
+            } catch (error) {
+                console.error('Error adding menu item:', error);
+                showMessage('Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Hiển thị thông báo
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.right = '20px';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.style.maxWidth = '300px';
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 5000);
+        }
+
+        // Placeholder functions
+        function editMenuItem(id) {
+            showMessage('Tính năng sửa món sẽ được bổ sung trong phiên bản tiếp theo', 'error');
+        }
+
+        function deleteMenuItem(id) {
+            if (confirm('Bạn có chắc muốn xóa món này?')) {
+                showMessage('Tính năng xóa món sẽ được bổ sung trong phiên bản tiếp theo', 'error');
+            }
         }
 
 
-        // Gán sự kiện cho các nút
-        addNewBtn.addEventListener('click', addNewItem);
-        saveBtn.addEventListener('click', saveItem);
-        cancelBtn.addEventListener('click', hideForm); // Nút hủy luôn ẩn form
-        deleteBtn.addEventListener('click', () => deleteItem(activeRow)); // Gán sự kiện cho nút xóa trong form
-        generateCsvBtn.addEventListener('click', generateCsv);
+	// Enhanced Mobile JavaScript for Admin Dashboard
 
-        // Tải dữ liệu khi trang được load
-        document.addEventListener('DOMContentLoaded', loadDataFromSheet);
+// Mobile Navigation & Tab Management
+let currentTab = 'orders';
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMobileAdmin();
+    refreshData();
+    
+    // Auto refresh every 30 seconds
+    setInterval(refreshData, 30000);
+});
+
+function initializeMobileAdmin() {
+    // Add mobile navigation HTML
+    updateMobileNavigation();
+    
+    // Initialize touch handlers
+    initializeTouchHandlers();
+    
+    // Initialize swipe gestures
+    initializeSwipeGestures();
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', function() {
+        setTimeout(refreshData, 500);
+    });
+    
+    // Handle visibility change (tab switching)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            refreshData();
+        }
+    });
+}
+
+function updateMobileNavigation() {
+    // Update tabs for mobile
+    const tabsContainer = document.querySelector('.tabs');
+    if (tabsContainer) {
+        tabsContainer.innerHTML = `
+            <button class="tab ${currentTab === 'orders' ? 'active' : ''}" onclick="showMobileTab('orders')">
+                <div class="tab-icon">📋</div>
+                <div>Đơn hàng</div>
+            </button>
+            <button class="tab ${currentTab === 'menu' ? 'active' : ''}" onclick="showMobileTab('menu')">
+                <div class="tab-icon">🍽️</div>
+                <div>Menu</div>
+            </button>
+            <button class="tab ${currentTab === 'analytics' ? 'active' : ''}" onclick="showMobileTab('analytics')">
+                <div class="tab-icon">📊</div>
+                <div>Thống kê</div>
+            </button>
+        `;
+    }
+}
+
+function showMobileTab(tabName) {
+    currentTab = tabName;
+    
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected tab pane
+    const targetPane = document.getElementById(tabName + 'Tab');
+    if (targetPane) {
+        targetPane.classList.add('active');
+    }
+    
+    // Add active class to clicked tab
+    event.target.closest('.tab').classList.add('active');
+    
+    // Smooth scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Haptic feedback
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
+
+// Touch Handlers
+function initializeTouchHandlers() {
+    // Add touch feedback to all interactive elements
+    const interactiveElements = document.querySelectorAll('.btn, .stat-card, .menu-item-card, .tab');
+    
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+        });
+        
+        element.addEventListener('touchend', function() {
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+}
+
+// Swipe Gestures for Orders
+function initializeSwipeGestures() {
+    let startX, startY, currentX, currentY;
+    let isHorizontalSwipe = false;
+    
+    document.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isHorizontalSwipe = false;
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (!startX || !startY) return;
+        
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+        
+        const diffX = Math.abs(currentX - startX);
+        const diffY = Math.abs(currentY - startY);
+        
+        if (diffX > diffY && diffX > 50) {
+            isHorizontalSwipe = true;
+        }
+    });
+    
+    document.addEventListener('touchend', function(e) {
+        if (!isHorizontalSwipe || !startX) return;
+        
+        const diffX = currentX - startX;
+        
+        // Swipe right to go to previous tab
+        if (diffX > 100) {
+            const tabs = ['orders', 'menu', 'analytics'];
+            const currentIndex = tabs.indexOf(currentTab);
+            if (currentIndex > 0) {
+                showMobileTab(tabs[currentIndex - 1]);
+            }
+        }
+        
+        // Swipe left to go to next tab
+        if (diffX < -100) {
+            const tabs = ['orders', 'menu', 'analytics'];
+            const currentIndex = tabs.indexOf(currentTab);
+            if (currentIndex < tabs.length - 1) {
+                showMobileTab(tabs[currentIndex + 1]);
+            }
+        }
+        
+        startX = null;
+        startY = null;
+    });
+}
+
+// Enhanced displayOrders with better mobile detection
+function displayOrders(orders) {
+    const container = document.getElementById('ordersContent');
+    
+    if (!orders || orders.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
+        return;
+    }
+
+    // Sort orders by Order ID descending
+    orders.sort((a, b) => (b['Order ID'] || 0) - (a['Order ID'] || 0));
+
+    // Better mobile detection
+    const isMobile = window.innerWidth <= 768 || window.screen.width <= 768 || 
+                    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    console.log('Display mode:', isMobile ? 'Mobile' : 'Desktop', 'Screen width:', window.innerWidth);
+    
+    if (isMobile) {
+        displayOrdersMobile(orders, container);
+    } else {
+        displayOrdersDesktop(orders, container);
+    }
+}
+// Force mobile view for testing - paste vào Console
+function forceMobileView() {
+    // Override mobile detection
+    window.displayOrders = function(orders) {
+        const container = document.getElementById('ordersContent');
+        if (orders && orders.length > 0) {
+            displayOrdersMobile(orders, container);
+        } else {
+            container.innerHTML = '<p style="text-align: center; padding: 2rem;">Không có đơn hàng</p>';
+        }
+    };
+    
+    // Reload orders in mobile view
+    if (currentOrders && currentOrders.length > 0) {
+        displayOrdersMobile(currentOrders, document.getElementById('ordersContent'));
+    } else {
+        loadOrders();
+    }
+    
+    console.log('✅ Forced mobile view activated');
+}
+
+// Quick test mobile cards
+function testMobileCards() {
+    const testOrders = [
+        {
+            'Order ID': 1,
+            'Thời gian đặt': '20:30:45 23/6/2025',
+            'Tên khách/Số bàn': 'Nguyễn Văn A',
+            'Chi tiết món': 'Cà phê đen x1 (25K) = 25K',
+            'Tổng tiền (K)': 25,
+            'Ghi chú': 'Ít đường',
+            'Trạng thái (Pending/Completed)': 'Pending'
+        }
+    ];
+    
+    displayOrdersMobile(testOrders, document.getElementById('ordersContent'));
+    console.log('✅ Test mobile cards displayed');
+}
+
+// ĐÚNG - Fixed displayOrdersMobile function
+function displayOrdersMobile(orders, container) {
+    console.log('Displaying mobile orders:', orders.length);
+    
+    if (orders.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Chưa có đơn hàng nào</div>';
+        return;
+    }
+    
+    let html = '<div class="orders-cards">';
+    
+    // Limit to 20 orders for performance
+    const limitedOrders = orders.slice(0, 20);
+    
+    limitedOrders.forEach(order => {
+        const orderId = order['Order ID'] || '';
+        const time = order['Thời gian đặt'] || '';
+        const customer = order['Tên khách/Số bàn'] || '';
+        const items = order['Chi tiết món'] || '';
+        const total = order['Tổng tiền (K)'] || '';
+        const notes = order['Ghi chú'] || '';
+        const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
+
+        const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
+                          status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
+
+        // Enhanced items display
+        const itemsArray = items.split(';');
+        const shortItems = itemsArray.length > 2 
+            ? itemsArray.slice(0, 2).join(', ') + ` (+${itemsArray.length - 2} món)` 
+            : items.replace(/;\n/g, ', ');
+        
+        const shortCustomer = customer.length > 20 ? customer.substring(0, 20) + '...' : customer;
+        
+        // Show full notes with better formatting
+        const displayNotes = notes && notes.length > 0 ? notes : '';
+        
+        // Enhanced time format with both date and time
+        const [datePart, timePart] = time.includes(' ') ? time.split(' ') : [time, ''];
+        const displayTime = timePart ? `${datePart}<br><small>${timePart}</small>` : time;
+
+        // FIXED: Button logic - only show buttons for Pending status
+        let actionButtons = '';
+        if (status.toLowerCase() === 'pending') {
+            actionButtons = `
+                <button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')" title="Hoàn thành">✓ Xong</button>
+                <button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')" title="Hủy đơn">✗ Hủy</button>
+            `;
+        } else {
+            // No buttons for completed/cancelled orders
+            actionButtons = '<span style="font-size: 0.7rem; color: #888;">Đã xử lý</span>';
+        }
+
+        html += `
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">#${orderId}</div>
+                    <div class="order-time">${displayTime}</div>
+                </div>
+                <div class="order-details">
+                    <div style="margin-bottom: 6px;"><strong>Khách:</strong> ${shortCustomer}</div>
+                    <div style="margin-bottom: 6px;"><strong>Món:</strong> ${shortItems}</div>
+                    <div style="color: #e74c3c; font-weight: bold; margin-bottom: 6px;">Tổng: ${total}K</div>
+                    ${displayNotes ? `<div class="order-notes"><strong>Ghi chú:</strong> ${displayNotes}</div>` : ''}
+                </div>
+                <div class="order-footer">
+                    <span class="status-badge ${statusClass}">${getShortStatus(status)}</span>
+                    <div class="order-actions">
+                        ${actionButtons}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Add "Load more" if there are more orders - INSIDE FUNCTION
+    if (orders.length > 20) {
+        html += `
+            <div style="text-align: center; padding: 10px;">
+                <button class="btn btn-primary" onclick="loadMoreOrders()" style="font-size: 0.8rem; padding: 8px 16px;">
+                    Xem thêm ${orders.length - 20} đơn
+                </button>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html; // CHỈ set innerHTML 1 lần duy nhất
+} // CHỈ đóng function 1 lần duy nhất// Desktop Table Display (Keep original)
+function displayOrdersDesktop(orders, container) {
+    let html = `
+        <div class="orders-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Thời gian</th>
+                        <th>Khách hàng</th>
+                        <th>Chi tiết món</th>
+                        <th>Tổng tiền</th>
+                        <th>Ghi chú</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    orders.forEach(order => {
+        const orderId = order['Order ID'] || '';
+        const time = order['Thời gian đặt'] || '';
+        const customer = order['Tên khách/Số bàn'] || '';
+        const items = order['Chi tiết món'] || '';
+        const total = order['Tổng tiền (K)'] || '';
+        const notes = order['Ghi chú'] || '';
+        const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
+
+        const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : 
+                          status.toLowerCase().includes('cancelled') ? 'status-cancelled' : 'status-pending';
+
+        html += `
+            <tr>
+                <td><strong>#${orderId}</strong></td>
+                <td>${time}</td>
+                <td>${customer}</td>
+                <td style="max-width: 200px; font-size: 0.9rem;">${items.replace(/;\n/g, '<br>')}</td>
+                <td><strong>${total}K</strong></td>
+                <td style="max-width: 150px; font-size: 0.9rem;">${notes}</td>
+                <td><span class="status-badge ${statusClass}">${status}</span></td>
+                <td>
+                    ${status !== 'Completed' ? `<button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')">Hoàn thành</button>` : ''}
+                    ${status !== 'Cancelled' ? `<button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')">Hủy</button>` : ''}
+                </td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+// Enhanced updateOrderStatus with loading state
+async function updateOrderStatus(orderId, newStatus) {
+    try {
+        // Show loading state
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = '...';
+        button.disabled = true;
+        
+        // Haptic feedback
+        if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+        }
+        
+        const formData = new URLSearchParams();
+        formData.append('action', 'updateOrderStatus');
+        formData.append('orderId', orderId);
+        formData.append('status', newStatus);
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage(`✅ Đã cập nhật đơn hàng #${orderId}`, 'success');
+            await loadOrders();
+            await loadStats();
+        } else {
+            throw new Error(result.error || 'Không thể cập nhật');
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        showMessage('❌ Lỗi: ' + error.message, 'error');
+        
+        // Reset button
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+}
+
+// Enhanced menu display for mobile
+function displayMenu(menu) {
+    const container = document.getElementById('menuContent');
+    
+    if (!menu || menu.length === 0) {
+        container.innerHTML = '<div class="loading">Chưa có món nào trong menu</div>';
+        return;
+    }
+
+    // Group menu by category
+    const categorized = {};
+    menu.forEach(item => {
+        const name = item['Tên Món'] || '';
+        const price = item['Giá (K)'] || '';
+        const id = item['ID Món'] || '';
+        
+        let category = determineCategory(name);
+        
+        if (!categorized[category]) {
+            categorized[category] = [];
+        }
+        
+        categorized[category].push({ id, name, price, category });
+    });
+
+    let html = '';
+    
+    Object.keys(categorized).sort().forEach(category => {
+        html += `
+            <div style="margin-bottom: 24px;">
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 8px; margin-bottom: 16px; font-size: 1.1rem;">
+                    ${getCategoryIcon(category)} ${category}
+                </h3>
+                <div class="menu-grid">
+        `;
+        
+        categorized[category].forEach(item => {
+            html += `
+                <div class="menu-item-card">
+                    <div class="menu-item-header">
+                        <h4 class="menu-item-name">${item.name}</h4>
+                        <span class="menu-item-category">${item.category}</span>
+                    </div>
+                    <div class="menu-item-price">${item.price}K</div>
+                    <div class="menu-item-actions">
+                        <button class="btn btn-primary" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">Sửa</button>
+                        <button class="btn btn-danger" onclick="deleteMenuItem('${item.id}', '${item.name}')">Xóa</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+    });
+
+    container.innerHTML = html;
+}
+
+// Helper functions
+function determineCategory(name) {
+    if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) return 'CAFE';
+    if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) return 'NƯỚC ÉP';
+    if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MĂNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) return 'TRÀ';
+    if (['KEM MẮN', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) return 'TRÀ SỮA';
+    if (['XOÀI', 'BLUE SKY', 'DỨA LƯỜI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) return 'SỮA CHUA LẮC';
+    return 'KHÁC';
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        'CAFE': '☕',
+        'NƯỚC ÉP': '🥤', 
+        'TRÀ': '🍃',
+        'TRÀ SỮA': '🧋',
+        'SỮA CHUA LẮC': '🥛',
+        'KHÁC': '🍹'
+    };
+    return icons[category] || '🍹';
+}
+
+// Handle screen rotation
+window.addEventListener('resize', function() {
+    if (currentOrders.length > 0) {
+        displayOrders(currentOrders);
+    }
+});
+// Debug function - paste vào Console (F12) để kiểm tra
+function debugOrders() {
+    console.log('Current orders:', currentOrders);
+    console.log('Orders length:', currentOrders ? currentOrders.length : 'undefined');
+    console.log('Is mobile?', window.innerWidth <= 768);
+    
+    if (currentOrders && currentOrders.length > 0) {
+        console.log('First order:', currentOrders[0]);
+        displayOrders(currentOrders);
+    } else {
+        console.log('No orders to display');
+        loadOrders(); // Try reload
+    }
+}
+
+// Auto-reload on window resize
+window.addEventListener('resize', function() {
+    if (currentOrders && currentOrders.length > 0) {
+        setTimeout(() => {
+            displayOrders(currentOrders);
+        }, 100);
+    }
+});
+// Date Filtering Functions
+let allOrders = []; // Store all orders for filtering
+let currentFilter = 'all';
+
+// Enhanced loadOrders to store all orders
+async function loadOrders() {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=getOrders`);
+        const result = await response.json();
+        
+        console.log('Load orders result:', result);
+        
+        if (result.success) {
+            allOrders = result.data; // Store all orders
+            currentOrders = allOrders; // Display all initially
+            console.log('Orders loaded:', allOrders.length);
+            
+            // Apply current filter
+            filterOrdersByDate();
+            
+        } else {
+            throw new Error(result.error || 'Failed to load orders');
+        }
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersContent').innerHTML = '<div class="error">Lỗi tải đơn hàng: ' + error.message + '</div>';
+    }
+}
+
+// Date filtering function
+function filterOrdersByDate() {
+    const filterValue = document.getElementById('dateFilter').value;
+    const customDateInputs = document.getElementById('customDateInputs');
+    const filterStats = document.getElementById('filterStats');
+    
+    currentFilter = filterValue;
+    
+    // Show/hide custom date inputs
+    if (filterValue === 'custom') {
+        customDateInputs.style.display = 'flex';
+        initializeDateInputs();
+    } else {
+        customDateInputs.style.display = 'none';
+    }
+    
+    // Filter orders based on selection
+    let filteredOrders = [];
+    const today = new Date();
+    const todayStr = formatDateForComparison(today);
+    
+    switch (filterValue) {
+        case 'all':
+            filteredOrders = allOrders;
+            break;
+            
+        case 'today':
+            filteredOrders = allOrders.filter(order => {
+                const orderDate = extractDateFromOrder(order);
+                return orderDate === todayStr;
+            });
+            break;
+            
+        case 'yesterday':
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = formatDateForComparison(yesterday);
+            filteredOrders = allOrders.filter(order => {
+                const orderDate = extractDateFromOrder(order);
+                return orderDate === yesterdayStr;
+            });
+            break;
+            
+        case 'this-week':
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+            filteredOrders = allOrders.filter(order => {
+                const orderDate = new Date(convertOrderDateToDate(order));
+                return orderDate >= startOfWeek && orderDate <= today;
+            });
+            break;
+            
+        case 'custom':
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (startDate && endDate) {
+                filteredOrders = allOrders.filter(order => {
+                    const orderDate = extractDateFromOrder(order);
+                    return orderDate >= startDate && orderDate <= endDate;
+                });
+            } else {
+                filteredOrders = allOrders;
+            }
+            break;
+            
+        default:
+            filteredOrders = allOrders;
+    }
+    
+    // Update filter stats
+    updateFilterStats(filteredOrders.length, allOrders.length, filterValue);
+    
+    // Display filtered orders
+    currentOrders = filteredOrders;
+    displayOrders(filteredOrders);
+}
+
+// Helper functions for date filtering
+function extractDateFromOrder(order) {
+    const timeStr = order['Thời gian đặt'] || '';
+    // Format: "20:30:45 23/6/2025" or "23/6/2025"
+    const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
+    
+    if (datePart.includes('/')) {
+        const [day, month, year] = datePart.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    
+    return '';
+}
+
+function convertOrderDateToDate(order) {
+    const timeStr = order['Thời gian đặt'] || '';
+    const datePart = timeStr.includes(' ') ? timeStr.split(' ')[1] : timeStr;
+    
+    if (datePart.includes('/')) {
+        const [day, month, year] = datePart.split('/');
+        return new Date(year, month - 1, day);
+    }
+    
+    return new Date();
+}
+
+function formatDateForComparison(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function initializeDateInputs() {
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    
+    if (!startDate.value) {
+        const today = new Date();
+        const weekAgo = new Date(today);
+        weekAgo.setDate(today.getDate() - 7);
+        
+        startDate.value = formatDateForComparison(weekAgo);
+        endDate.value = formatDateForComparison(today);
+    }
+}
+
+function updateFilterStats(filteredCount, totalCount, filterType) {
+    const filterStats = document.getElementById('filterStats');
+    
+    let message = '';
+    switch (filterType) {
+        case 'all':
+            message = `Tất cả ${totalCount} đơn hàng`;
+            break;
+        case 'today':
+            message = `${filteredCount} đơn hôm nay`;
+            break;
+        case 'yesterday':
+            message = `${filteredCount} đơn hôm qua`;
+            break;
+        case 'this-week':
+            message = `${filteredCount} đơn tuần này`;
+            break;
+        case 'custom':
+            message = `${filteredCount} đơn được lọc`;
+            break;
+        default:
+            message = `${filteredCount}/${totalCount} đơn hàng`;
+    }
+    
+    filterStats.textContent = message;
+    
+    // Hide if no orders
+    if (filteredCount === 0 && filterType !== 'all') {
+        filterStats.style.background = 'rgba(231, 76, 60, 0.1)';
+        filterStats.style.color = '#e74c3c';
+        filterStats.style.borderColor = 'rgba(231, 76, 60, 0.3)';
+    } else {
+        filterStats.style.background = 'rgba(39, 174, 96, 0.1)';
+        filterStats.style.color = '#27ae60';
+        filterStats.style.borderColor = 'rgba(39, 174, 96, 0.3)';
+    }
+}
+
+// Initialize date filter when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    
+    // Set today as default if no filter selected
+    setTimeout(() => {
+        if (document.getElementById('dateFilter')) {
+            document.getElementById('dateFilter').value = 'today';
+            filterOrdersByDate();
+        }
+    }, 1000);
+});
+// Helper function for short status - THÊM FUNCTION NÀY
+function getShortStatus(status) {
+    if (status.toLowerCase().includes('completed')) return 'Xong';
+    if (status.toLowerCase().includes('cancelled')) return 'Hủy';
+    return 'Chờ';
+}
+
+// Load more orders function
+let displayedOrdersCount = 20;
+function loadMoreOrders() {
+    displayedOrdersCount += 20;
+    if (currentOrders) {
+        const container = document.getElementById('ordersContent');
+        displayOrdersMobile(currentOrders.slice(0, displayedOrdersCount), container);
+    }
+}
+
     </script>
 </body>
 </html>
