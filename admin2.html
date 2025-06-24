@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: auto; background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #0056b3; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: left; vertical-align: middle; }
+        th { background-color: #e9ecef; color: #555; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f8f8f8; }
+        tr:hover { background-color: #f1f1f1; }
+        .form-container {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            padding: 25px;
+            border: 1px solid #ddd;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+        }
+        .form-container label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .form-container input[type="text"],
+        .form-container input[type="number"] {
+            width: calc(100% - 24px); /* Account for padding and border */
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .buttons { text-align: right; margin-top: 20px; }
+        .buttons button {
+            padding: 12px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .buttons button.save { background-color: #28a745; color: white; }
+        .buttons button.save:hover { background-color: #218838; }
+        .buttons button.delete { background-color: #dc3545; color: white; }
+        .buttons button.delete:hover { background-color: #c82333; }
+        .buttons button.cancel { background-color: #6c757d; color: white; }
+        .buttons button.cancel:hover { background-color: #5a6268; }
+        
+        .add-new-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .add-new-btn:hover { background-color: #0056b3; }
+
+        .message { margin-top: 20px; padding: 15px; border-radius: 5px; font-size: 15px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        .action-btns button {
+            padding: 8px 12px;
+            margin-right: 5px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .action-btns .edit-btn { background-color: #ffc107; color: #333; }
+        .action-btns .edit-btn:hover { background-color: #e0a800; }
+        .action-btns .delete-btn { background-color: #dc3545; color: white; }
+        .action-btns .delete-btn:hover { background-color: #c82333; }
+
+        #csvOutput {
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel - Quản lý Menu</h1>
+
+        <button id="addNewBtn" class="add-new-btn">Thêm Món Mới</button>
+
+        <div id="dataTableContainer" class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Món</th>
+                        <th>Tên Món</th>
+                        <th>Giá (K)</th>
+                        <th>Danh mục</th>
+                        <th>Icon</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="item-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="formContainer" class="form-container">
+            <h2>Chỉnh sửa/Thêm Món</h2>
+            <form id="itemForm">
+                <label for="item-id">ID Món:</label>
+                <input type="text" id="item-id" readonly><br>
+
+                <label for="item-name">Tên Món:</label>
+                <input type="text" id="item-name" required><br>
+
+                <label for="item-price">Giá (K):</label>
+                <input type="number" id="item-price" required><br>
+
+                <label for="item-category">Danh mục:</label>
+                <input type="text" id="item-category"><br>
+
+                <label for="item-icon">Icon:</label>
+                <input type="text" id="item-icon"><br>
+
+                <div class="buttons">
+                    <button type="button" id="saveBtn" class="save">Lưu</button>
+                    <button type="button" id="deleteBtn" class="delete">Xóa</button>
+                    <button type="button" id="cancelBtn" class="cancel">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="messageDisplay" class="message warning" style="display:none;">
+            <p>Lưu ý quan trọng: Các thay đổi bạn thực hiện ở đây chỉ có hiệu lực trong trình duyệt của bạn. Để lưu các thay đổi này vĩnh viễn vào Google Sheet, bạn cần phải sao chép dữ liệu từ nút "Tạo CSV để cập nhật thủ công" và **dán đè thủ công vào Google Sheet gốc**, sau đó **xuất bản lại sheet**.</p>
+            <p>Việc ghi trực tiếp từ trang web vào Google Sheet yêu cầu một hệ thống backend (ví dụ: Google Apps Script hoặc server riêng), điều này phức tạp hơn nhiều.</p>
+        </div>
+        <button id="generateCsvBtn" class="add-new-btn" style="margin-top: 20px; background-color: #4CAF50;">Tạo CSV để cập nhật thủ công</button>
+        <textarea id="csvOutput" style="width: 100%; height: 200px; margin-top: 10px; display: none;" readonly></textarea>
+
+    </div>
+
+    <script>
+        // ** THAY THẾ BẰNG URL CSV CỦA BẠN TỪ GOOGLE SHEET ĐÃ XUẤT BẢN **
+        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSv_PxGRr5CBEBhqfDB5C4qyMkERf6OMa2mKHQRadetWH4FJtf_pV7lEoggCM0BXBurpc93HfP2lFRs/pub?gid=0&single=true&output=csv'; 
+
+        let menuData = []; // Dữ liệu menu sẽ được lưu trữ ở đây
+        let activeRow = null; // Dùng để theo dõi hàng đang được chỉnh sửa
+
+        // Lấy các phần tử DOM
+        const dataTableContainer = document.getElementById('dataTableContainer');
+        const formContainer = document.getElementById('formContainer');
+        const itemForm = document.getElementById('itemForm');
+        const itemTableBody = document.getElementById('item-table-body');
+        const addNewBtn = document.getElementById('addNewBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const messageDisplay = document.getElementById('messageDisplay');
+        const generateCsvBtn = document.getElementById('generateCsvBtn');
+        const csvOutput = document.getElementById('csvOutput');
+
+        // Input fields
+        const itemIdInput = document.getElementById('item-id');
+        const itemNameInput = document.getElementById('item-name');
+        const itemPriceInput = document.getElementById('item-price');
+        const itemCategoryInput = document.getElementById('item-category');
+        const itemIconInput = document.getElementById('item-icon');
+
+        // Hàm chuyển đổi CSV thành JSON
+        function csvToJson(csv) {
+            const lines = csv.split('\n');
+            const result = [];
+            // Lấy tiêu đề cột, loại bỏ ký tự carriage return nếu có
+            const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
+
+            for (let i = 1; i < lines.length; i++) {
+                const currentline = lines[i].split(',');
+                if (currentline.length === headers.length) { // Đảm bảo dòng có đủ số cột
+                    const obj = {};
+                    for (let j = 0; j < headers.length; j++) {
+                        // Xử lý giá trị trong dấu ngoặc kép và loại bỏ khoảng trắng thừa
+                        let value = currentline[j] ? currentline[j].trim() : '';
+                        if (value.startsWith('"') && value.endsWith('"')) {
+                            value = value.substring(1, value.length - 1); // Bỏ dấu ngoặc kép
+                        }
+                        obj[headers[j]] = value;
+                    }
+                    result.push(obj);
+                }
+            }
+            return result;
+        }
+
+        // Hàm tải dữ liệu từ Google Sheet
+        async function loadDataFromSheet() {
+            try {
+                const response = await fetch(googleSheetUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+                menuData = csvToJson(csvText);
+                renderTable(menuData);
+                showMessage('Dữ liệu đã được tải thành công.', 'success');
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu từ Google Sheet:', error);
+                showMessage(`Không thể tải dữ liệu: ${error.message}. Vui lòng kiểm tra URL và kết nối mạng.`, 'error');
+            }
+        }
+
+        // Hàm hiển thị dữ liệu ra bảng
+        function renderTable(data) {
+            itemTableBody.innerHTML = ''; // Xóa nội dung cũ
+            if (data.length === 0) {
+                itemTableBody.innerHTML = '<tr><td colspan="6">Không có dữ liệu.</td></tr>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const row = itemTableBody.insertRow();
+                row.dataset.index = index; // Lưu index của item trong mảng để dễ chỉnh sửa/xóa
+
+                row.insertCell().textContent = item['ID Món'] || ''; // Cột ID Món
+                row.insertCell().textContent = item.name || ''; // Cột Tên Món
+                row.insertCell().textContent = `${item.price || '0'}K`; // Cột Giá
+                row.insertCell().textContent = item.category || ''; // Cột Danh mục
+                row.insertCell().textContent = item.category_icon || ''; // Cột Icon
+
+                const actionsCell = row.insertCell();
+                actionsCell.classList.add('action-btns');
+                
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Sửa';
+                editButton.classList.add('edit-btn');
+                editButton.onclick = () => editItem(row);
+                actionsCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Xóa';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.onclick = () => deleteItem(row);
+                actionsCell.appendChild(deleteButton);
+            });
+            showMessage('Lưu ý: Các thay đổi chỉ có hiệu lực trên trình duyệt của bạn. Để lưu thực sự vào Google Sheet, bạn cần xuất bản lại hoặc sử dụng một hệ thống backend.', 'warning');
+            csvOutput.style.display = 'none'; // Ẩn CSV output khi bảng được render lại
+        }
+
+        // Hàm hiển thị form chỉnh sửa/thêm
+        function showForm() {
+            dataTableContainer.style.display = 'none';
+            addNewBtn.style.display = 'none';
+            formContainer.style.display = 'block';
+            deleteBtn.style.display = activeRow ? 'inline-block' : 'none'; // Hiện nút xóa nếu đang sửa, ẩn nếu thêm mới
+            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ form
+        }
+
+        // Hàm ẩn form và hiển thị bảng
+        function hideForm() {
+            dataTableContainer.style.display = 'block';
+            addNewBtn.style.display = 'inline-block';
+            formContainer.style.display = 'none';
+            itemForm.reset(); // Xóa dữ liệu trong form
+            activeRow = null; // Đặt lại activeRow
+            messageDisplay.style.display = 'block'; // Luôn hiện thông báo cảnh báo khi ở chế độ bảng
+        }
+
+        // Hàm điền dữ liệu vào form khi click Sửa
+        function editItem(row) {
+            activeRow = row;
+            const index = parseInt(row.dataset.index);
+            const item = menuData[index];
+
+            itemIdInput.value = item['ID Món'] || '';
+            itemNameInput.value = item.name || '';
+            itemPriceInput.value = parseInt(item.price) || ''; // Convert to number
+            itemCategoryInput.value = item.category || '';
+            itemIconInput.value = item.category_icon || '';
+            
+            showForm();
+        }
+
+        // Hàm xóa món
+        function deleteItem(row) {
+            if (!confirm('Bạn có chắc chắn muốn xóa món này?')) {
+                return;
+            }
+
+            const index = parseInt(row.dataset.index);
+            menuData.splice(index, 1); // Xóa khỏi mảng menuData
+            renderTable(menuData); // Render lại bảng
+            hideForm();
+            showMessage('Đã xóa món khỏi danh sách (tạm thời trong trình duyệt).', 'warning');
+        }
+
+        // Hàm lưu (thêm mới hoặc cập nhật)
+        function saveItem() {
+            const newItem = {
+                'ID Món': itemIdInput.value.trim(),
+                'name': itemNameInput.value.trim(),
+                'price': parseInt(itemPriceInput.value) || 0,
+                'category': itemCategoryInput.value.trim(),
+                'category_icon': itemIconInput.value.trim()
+            };
+
+            if (!newItem.name || !newItem.price) {
+                showMessage('Tên món và Giá không được để trống!', 'error');
+                return;
+            }
+
+            if (activeRow) {
+                // Cập nhật món đã có
+                const index = parseInt(activeRow.dataset.index);
+                menuData[index] = newItem;
+                showMessage('Đã cập nhật món (tạm thời trong trình duyệt).', 'warning');
+            } else {
+                // Thêm món mới
+                // Tạo ID mới tự động: max ID hiện có + 1
+                const maxId = menuData.reduce((max, item) => Math.max(max, parseInt(item['ID Món'] || 0)), 0);
+                newItem['ID Món'] = (maxId + 1).toString(); // Chuyển lại thành chuỗi
+                menuData.push(newItem);
+                showMessage('Đã thêm món mới (tạm thời trong trình duyệt).', 'warning');
+            }
+            renderTable(menuData); // Render lại bảng với dữ liệu mới
+            hideForm();
+        }
+
+        // Hàm thêm món mới
+        function addNewItem() {
+            activeRow = null; // Đặt activeRow về null để biết là đang thêm mới
+            itemForm.reset(); // Xóa sạch form
+            itemIdInput.value = 'Tự động'; // Hoặc để trống nếu bạn muốn tự gán
+            showForm();
+        }
+
+        // Hàm hiển thị thông báo
+        function showMessage(msg, type) {
+            messageDisplay.textContent = msg;
+            messageDisplay.className = `message ${type}`; // Đổi class để đổi màu
+            messageDisplay.style.display = 'block';
+            if (type === 'success' || type === 'error') {
+                 setTimeout(() => {
+                    messageDisplay.style.display = 'block'; // Giữ lại thông báo warning
+                }, 5000); // Tự động ẩn sau 5s nếu là success/error
+            }
+        }
+
+        // Hàm tạo chuỗi CSV từ dữ liệu hiện tại
+        function generateCsv() {
+            const headers = ['ID Món', 'name', 'price', 'category', 'category_icon'];
+            let csvContent = headers.map(header => `"${header}"`).join(',') + '\n';
+
+            menuData.forEach(item => {
+                const row = headers.map(header => {
+                    let value = item[header] !== undefined && item[header] !== null ? item[header].toString().replace(/"/g, '""') : '';
+                    if (value.includes(',') || value.includes('\n') || value.includes('"') || value.trim() !== value) {
+                        return `"${value}"`; // Bọc trong dấu ngoặc kép nếu có ký tự đặc biệt
+                    }
+                    return value;
+                }).join(',');
+                csvContent += row + '\n';
+            });
+
+            csvOutput.value = csvContent;
+            csvOutput.style.display = 'block';
+            csvOutput.select(); // Chọn toàn bộ nội dung để dễ dàng sao chép
+            showMessage('Vui lòng sao chép nội dung bên dưới và dán vào Google Sheet của bạn. Sau đó, đừng quên "Xuất bản lên web" lại Google Sheet!', 'success');
+        }
+
+
+        // Gán sự kiện cho các nút
+        addNewBtn.addEventListener('click', addNewItem);
+        saveBtn.addEventListener('click', saveItem);
+        cancelBtn.addEventListener('click', hideForm); // Nút hủy luôn ẩn form
+        deleteBtn.addEventListener('click', () => deleteItem(activeRow)); // Gán sự kiện cho nút xóa trong form
+        generateCsvBtn.addEventListener('click', generateCsv);
+
+        // Tải dữ liệu khi trang được load
+        document.addEventListener('DOMContentLoaded', loadDataFromSheet);
+    </script>
+</body>
+</html>
