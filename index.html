@@ -1261,15 +1261,15 @@ function displayMenu(menu) {
         // Determine category based on menu structure
         let category = 'KHÁC';
         if (['ĐEN', 'NÂU', 'BẠC XỈU', 'KEM MUỐI'].includes(name)) {
-            category = '☕ CAFE';
+            category = 'CAFE';
         } else if (['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = '🥤 NƯỚC ÉP';
+            category = 'NƯỚC ÉP';
         } else if (['NHIỆT ĐỚI', 'XOÀI CHANH LEO', 'QUÝT', 'MÃNG CẦU', 'CHANH', 'VIỆT QUẤT', 'SEN VÀNG'].includes(name)) {
-            category = '🍃 TRÀ';
+            category = 'TRÀ';
         } else if (['KEM MẮN', 'SƯƠNG SÁO', 'MATCHA'].includes(name)) {
-            category = '🧋 TRÀ SỮA';
+            category = 'TRÀ SỮA';
         } else if (['XOÀI', 'BLUE SKY', 'DỨA LƯỜI'].includes(name) && !['CAM', 'CAM CARROT', 'DƯA HẤU', 'CAM DỨA'].includes(name)) {
-            category = '🥛 SỮA CHUA LẮC';
+            category = 'SỮA CHUA LẮC';
         }
         
         if (!categorized[category]) {
