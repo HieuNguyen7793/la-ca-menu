@@ -1279,6 +1279,147 @@
         grid-column: 1 / -1; /* Button full width */
     }
 }
+
+/* Enhanced Status Management Styles */
+.status-management {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 12px 0;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.status-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.status-select {
+    flex: 1;
+    padding: 8px 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-height: 36px;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.status-select.available {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border-color: #27ae60;
+}
+
+.status-select.out-of-stock {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border-color: #e74c3c;
+}
+
+.btn-update-status {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-update-status:hover {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-update-status:active {
+    transform: translateY(0);
+}
+
+/* Visual indicators for menu items */
+.menu-item-card.status-available {
+    border-left: 4px solid #27ae60;
+}
+
+.menu-item-card.status-out-of-stock {
+    border-left: 4px solid #e74c3c;
+    opacity: 0.8;
+}
+
+.status-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 2;
+}
+
+.status-badge.available {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+}
+
+.status-badge.out-of-stock {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+/* Mobile responsive status controls */
+@media (max-width: 480px) {
+    .status-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .btn-update-status {
+        width: 100%;
+        min-height: 40px;
+    }
+    
+    .status-label {
+        font-size: 0.75rem;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -1412,32 +1553,39 @@
                 <h2>Quản lý menu</h2>
                 
 		<!-- Enhanced Add Item Form -->
-		    <div class="add-item-form">
-			<h3>✨ Thêm món mới vào menu</h3>
-			<div class="form-row">
-			    <div class="form-group">
-				<label for="newItemName">TÊN MÓN</label>
-				<input type="text" id="newItemName" placeholder="VD: Cappuccino đặc biệt">
-			    </div>
-			    <div class="form-group">
-				<label for="newItemPrice">GIÁ (K)</label>
-				<input type="number" id="newItemPrice" placeholder="35">
-			    </div>
-			    <div class="form-group">
-				<label for="newItemCategory">DANH MỤC</label>
-				<select id="newItemCategory">
-				    <option value="CAFE">☕ CAFE</option>
-				    <option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
-				    <option value="TRÀ">🍃 TRÀ</option>
-				    <option value="TRÀ SỮA">🧋 TRÀ SỮA</option>
-				    <option value="SỮA CHUA LẮC">🥛 SỮA CHUA LẮC</option>
-				</select>
-			    </div>
-			    <div class="form-group">
-				<button class="btn-add" onclick="addNewMenuItem()">THÊM MÓN</button>
-			    </div>
+		<div class="add-item-form">
+		    <h3>✨ Thêm món mới vào menu</h3>
+		    <div class="form-row">
+			<div class="form-group">
+			    <label for="newItemName">TÊN MÓN</label>
+			    <input type="text" id="newItemName" placeholder="VD: Cappuccino đặc biệt">
+			</div>
+			<div class="form-group">
+			    <label for="newItemPrice">GIÁ (K)</label>
+			    <input type="number" id="newItemPrice" placeholder="35">
+			</div>
+			<div class="form-group">
+			    <label for="newItemCategory">DANH MỤC</label>
+			    <select id="newItemCategory">
+				<option value="CAFE">☕ CAFE</option>
+				<option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
+				<option value="TRÀ">🍃 TRÀ</option>
+				<option value="TRÀ SỮA">🧋 TRÀ SỮA</option>
+				<option value="SỮA CHUA LẮC">🥛 SỮA CHUA LẮC</option>
+			    </select>
+			</div>
+			<div class="form-group">
+			    <label for="newItemStatus">TRẠNG THÁI</label>
+			    <select id="newItemStatus">
+				<option value="1">✅ Còn hàng</option>
+				<option value="0">❌ Hết hàng</option>
+			    </select>
+			</div>
+			<div class="form-group">
+			    <button class="btn-add" onclick="addNewMenuItem()">THÊM MÓN</button>
 			</div>
 		    </div>
+		</div>
 
 		    <div id="menuContent">
 			<div class="loading">Đang tải menu...</div>
@@ -2234,90 +2382,268 @@
         }
 
         // ============= MENU AND ANALYTICS FUNCTIONS =============
-        async function loadMenu() {
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=getMenu`);
-                const result = await response.json();
-                if (result.success) {
-                    currentMenu = result.data;
-                    displayMenu(currentMenu);
-                }
-            } catch (error) {
-                console.error('Error loading menu:', error);
-                document.getElementById('menuContent').innerHTML = '<div class="error">Lỗi tải menu: ' + error.message + '</div>';
-            }
-        }
-
-	function displayMenu(menu) {
-	    const container = document.getElementById('menuContent');
-	    
-	    if (!menu || menu.length === 0) {
-		container.innerHTML = `
-		    <div class="menu-empty-state">
-		        <div class="empty-icon">🍽️</div>
-		        <h3>Chưa có món nào trong menu</h3>
-		        <p>Hãy thêm món đầu tiên để bắt đầu xây dựng menu chuyên nghiệp!</p>
-		    </div>
-		`;
-		return;
-	    }
-
-	    const categorized = {};
-	    menu.forEach(item => {
-		const name = item['name'] || '';
-		const price = item['price'] || '';
-		const id = item['ID Món'] || '';
-		const category = item['category'] || 'KHÁC';
-
-		if (!categorized[category]) {
-		    categorized[category] = [];
+		async function loadMenu() {
+		    try {
+			const response = await fetch(`${SCRIPT_URL}?action=getMenu`);
+			const result = await response.json();
+			if (result.success) {
+			    // ✅ Normalize tất cả status về '1'/'0'
+			    currentMenu = result.data.map(item => ({
+				...item,
+				status: normalizeStatus(item.status || item.Status)
+			    }));
+			    displayMenu(currentMenu);
+			}
+		    } catch (error) {
+			console.error('Error loading menu:', error);
+			document.getElementById('menuContent').innerHTML = '<div class="error">Lỗi tải menu: ' + error.message + '</div>';
+		    }
 		}
-		categorized[category].push({ id, name, price, category });
-	    });
 
-	    let html = '<div class="menu-categories">';
-	    
-	    Object.keys(categorized).sort().forEach(category => {
-		const items = categorized[category];
-		html += `
-		    <div class="category-section">
-		        <div class="category-header">
-		            <div class="category-title">
-		                <span class="category-icon">${getCategoryIcon(category)}</span>
-		                <span>${category}</span>
-		            </div>
-		            <span class="category-count">${items.length} món</span>
-		        </div>
-		        <div class="menu-items-grid">
-		`;
+		// ✅ Helper function để chuẩn hóa status
+		function normalizeStatus(statusValue) {
+		    if (!statusValue) return '1'; // Default: available
+		    
+		    const status = statusValue.toString().toLowerCase().trim();
+		    
+		    // Chuyển đổi tất cả format về '1'/'0'
+		    if (status === 'còn hàng' || status === 'available' || status === '1') {
+			return '1';
+		    } else if (status === 'hết hàng' || status === 'out-of-stock' || status === '0') {
+			return '0';
+		    }
+		    
+		    return '1'; // Default: available
+		}
 
-		items.forEach(item => {
-		    html += `
-		        <div class="menu-item-card">
-		            <div class="menu-item-header">
-		                <h4 class="menu-item-name">${item.name}</h4>
-		                <span class="menu-item-id">#${item.id}</span>
-		            </div>
-		            <div class="menu-item-price">${item.price}K</div>
-		            <div class="menu-item-actions">
-		                <button class="btn-edit" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">
-		                    SỬA
-		                </button>
-		                <button class="btn-delete" onclick="deleteMenuItem('${item.id}', '${item.name}')">
-		                    XÓA
-		                </button>
-		            </div>
-		        </div>
-		    `;
-		});
-		
-		html += '</div></div>';
-	    });
-	    
-	    html += '</div>';
-	    container.innerHTML = html;
-	}
+		// ✅ Helper function để hiển thị status text
+		function getStatusText(status) {
+		    const normalizedStatus = normalizeStatus(status);
+		    return normalizedStatus === '1' ? 'Còn hàng' : 'Hết hàng';
+		}
 
+		// ✅ Helper function để get status class
+		function getStatusClass(status) {
+		    const normalizedStatus = normalizeStatus(status);
+		    return normalizedStatus === '1' ? 'available' : 'out-of-stock';
+		}
+
+
+function displayMenu(menu) {
+    const container = document.getElementById('menuContent');
+    
+    if (!menu || menu.length === 0) {
+        container.innerHTML = `
+            <div class="menu-empty-state">
+                <div class="empty-icon">🍽️</div>
+                <h3>Chưa có món nào trong menu</h3>
+                <p>Hãy thêm món đầu tiên để bắt đầu xây dựng menu chuyên nghiệp!</p>
+            </div>
+        `;
+        return;
+    }
+
+    const categorized = {};
+    menu.forEach(item => {
+        const name = item['name'] || '';
+        const price = item['price'] || '';
+        const id = item['ID Món'] || '';
+        const category = item['category'] || 'KHÁC';
+        
+        // ✅ Chuẩn hóa status về format '1'/'0'
+        const rawStatus = item['status'] || item['Status'] || '1';
+        const status = normalizeStatus(rawStatus);
+
+        if (!categorized[category]) {
+            categorized[category] = [];
+        }
+        categorized[category].push({ id, name, price, category, status });
+    });
+
+    let html = '<div class="menu-categories">';
+    
+    Object.keys(categorized).sort().forEach(category => {
+        const items = categorized[category];
+        const availableCount = items.filter(item => item.status === '1').length;
+        const outOfStockCount = items.length - availableCount;
+        
+        html += `
+            <div class="category-section">
+                <div class="category-header">
+                    <div class="category-title">
+                        <span class="category-icon">${getCategoryIcon(category)}</span>
+                        <span>${category}</span>
+                    </div>
+                    <div class="category-stats">
+                        <span class="category-count">${items.length} món</span>
+                        <span style="color: #27ae60; font-size: 0.7rem;">✅ ${availableCount}</span>
+                        <span style="color: #e74c3c; font-size: 0.7rem;">❌ ${outOfStockCount}</span>
+                    </div>
+                </div>
+                <div class="menu-items-grid">
+        `;
+
+        items.forEach(item => {
+            // ✅ Sử dụng status đã được normalize
+            const isAvailable = item.status === '1';
+            const statusClass = getStatusClass(item.status);
+            const statusText = getStatusText(item.status);
+            
+            html += `
+                <div class="menu-item-card status-${statusClass}" data-item-id="${item.id}">
+                    <!-- Status Badge -->
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                    
+                    <div class="menu-item-header">
+                        <h4 class="menu-item-name">${item.name}</h4>
+                        <span class="menu-item-id">#${item.id}</span>
+                    </div>
+                    <div class="menu-item-price">${item.price}K</div>
+                    
+                    <!-- Status Management Section -->
+                    <div class="status-management">
+                        <div class="status-label">
+                            🏷️ Trạng thái món
+                        </div>
+                        <div class="status-controls">
+                            <select class="status-select ${statusClass}" 
+                                    id="status-${item.id}" 
+                                    data-item-id="${item.id}"
+                                    data-item-name="${item.name}">
+                                <option value="1" ${isAvailable ? 'selected' : ''}>✅ Còn hàng</option>
+                                <option value="0" ${!isAvailable ? 'selected' : ''}>❌ Hết hàng</option>
+                            </select>
+                            <button class="btn-update-status" onclick="updateItemStatus('${item.id}', '${item.name}')">
+                                🔄 CẬP NHẬT
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item-actions">
+                        <button class="btn-edit" onclick="openEditDialog('${item.id}', '${item.name}', '${item.price}', '${item.category}')">
+                            SỬA
+                        </button>
+                        <button class="btn-delete" onclick="deleteMenuItem('${item.id}', '${item.name}')">
+                            XÓA
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+
+// Update item status function
+async function updateItemStatus(itemId, itemName) {
+    const selectElement = document.getElementById(`status-${itemId}`);
+    const newStatus = selectElement.value; // '1' hoặc '0'
+    const statusText = getStatusText(newStatus);
+    
+    try {
+        // Show loading state
+        const updateBtn = selectElement.nextElementSibling;
+        const originalText = updateBtn.innerHTML;
+        updateBtn.innerHTML = '⏳ Đang cập nhật...';
+        updateBtn.disabled = true;
+        
+        // ✅ Gửi với format status chuẩn
+        const formData = new URLSearchParams();
+        formData.append('action', 'updateItemStatus');
+        formData.append('itemId', itemId);
+        formData.append('status', newStatus); // Gửi '1' hoặc '0'
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+
+        if (result.success) {
+            // ✅ Update visual state với format đúng
+            updateItemVisualStatus(itemId, newStatus);
+            
+            showNotification(
+                'Cập nhật thành công!', 
+                `Đã thay đổi trạng thái món "${itemName}" thành "${statusText}"`
+            );
+            
+            // Update local data
+            updateLocalMenuData(itemId, newStatus);
+            
+        } else {
+            throw new Error(result.error || 'Không thể cập nhật trạng thái');
+        }
+        
+    } catch (error) {
+        console.error('Error updating item status:', error);
+        
+        // ✅ Revert select value với logic đúng
+        selectElement.value = selectElement.value === '1' ? '0' : '1';
+        
+        showNotification(
+            'Lỗi cập nhật!', 
+            `Không thể cập nhật trạng thái món "${itemName}": ${error.message}`,
+            'error'
+        );
+    } finally {
+        // Reset button state
+        const updateBtn = selectElement.nextElementSibling;
+        updateBtn.innerHTML = '🔄 CẬP NHẬT';
+        updateBtn.disabled = false;
+    }
+}
+
+// Update visual status of menu item
+function updateItemVisualStatus(itemId, newStatus) {
+    const menuCard = document.querySelector(`[data-item-id="${itemId}"]`);
+    const selectElement = document.getElementById(`status-${itemId}`);
+    const statusBadge = menuCard?.querySelector('.status-badge');
+    
+    const isAvailable = newStatus === '1';
+    const statusClass = getStatusClass(newStatus);
+    const statusText = getStatusText(newStatus);
+    
+    // Update menu card class
+    if (menuCard) {
+        menuCard.className = `menu-item-card status-${statusClass}`;
+    }
+    
+    // Update select element class
+    if (selectElement) {
+        selectElement.className = `status-select ${statusClass}`;
+    }
+    
+    // Update status badge
+    if (statusBadge) {
+        statusBadge.className = `status-badge ${statusClass}`;
+        statusBadge.textContent = statusText;
+    }
+}
+
+// Update local menu data
+function updateLocalMenuData(itemId, newStatus) {
+    if (currentMenu && Array.isArray(currentMenu)) {
+        const itemIndex = currentMenu.findIndex(item => 
+            (item['ID Món'] || item['id']) === itemId
+        );
+        
+        if (itemIndex !== -1) {
+            // ✅ Update cả 2 field để đảm bảo consistency
+            currentMenu[itemIndex]['status'] = newStatus;
+            currentMenu[itemIndex]['Status'] = newStatus;
+        }
+    }
+}
 
 
         function getCategoryIcon(category) {
@@ -2412,50 +2738,60 @@
             }
         }
 
-        async function addNewMenuItem() {
-            const name = document.getElementById('newItemName').value.trim();
-            const price = document.getElementById('newItemPrice').value.trim();
-            const category = document.getElementById('newItemCategory').value;
+// Enhanced add new menu item with status
+async function addNewMenuItem() {
+    const name = document.getElementById('newItemName').value.trim();
+    const price = document.getElementById('newItemPrice').value.trim();
+    const category = document.getElementById('newItemCategory').value;
+    const status = document.getElementById('newItemStatus').value || '1'; // Default: '1'
 
-            if (!name) {
-                showNotification('Lỗi', 'Tên món không được để trống!', 'error');
-                return;
-            }
-            if (!price || isNaN(price) || parseInt(price) <= 0) {
-                showNotification('Lỗi', 'Giá món phải là số dương!', 'error');
-                return;
-            }
+    if (!name) {
+        showNotification('Lỗi', 'Tên món không được để trống!', 'error');
+        return;
+    }
+    if (!price || isNaN(price) || parseInt(price) <= 0) {
+        showNotification('Lỗi', 'Giá món phải là số dương!', 'error');
+        return;
+    }
 
-            try {
-                const formData = new URLSearchParams();
-                formData.append('action', 'addMenuItem');
-                formData.append('name', name);
-                formData.append('price', parseInt(price));
-                formData.append('category', category);
+    try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'addMenuItem');
+        formData.append('name', name);
+        formData.append('price', parseInt(price));
+        formData.append('category', category);
+        formData.append('status', status); // ✅ Gửi '1' hoặc '0'
 
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: formData
-                });
-                const result = await response.json();
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+        const result = await response.json();
 
-                if (result.success) {
-                    showNotification('Thành công', `Đã thêm món "${name}" - ${price}K vào menu!`);
-                    document.getElementById('newItemName').value = '';
-                    document.getElementById('newItemPrice').value = '';
-                    document.getElementById('newItemCategory').value = 'CAFE';
-                    await loadMenu();
-                } else {
-                    throw new Error(result.error || 'Không thể thêm món');
-                }
-            } catch (error) {
-                console.error('Error adding new menu item:', error);
-                showNotification('Lỗi', 'Lỗi thêm món mới: ' + error.message, 'error');
-            }
+        if (result.success) {
+            const statusText = getStatusText(status);
+            showNotification('Thành công', `Đã thêm món "${name}" - ${price}K (${statusText}) vào menu!`);
+            
+            // Clear form
+            document.getElementById('newItemName').value = '';
+            document.getElementById('newItemPrice').value = '';
+            document.getElementById('newItemCategory').value = 'CAFE';
+            document.getElementById('newItemStatus').value = '1'; // ✅ Reset về '1'
+            
+            // Reload menu
+            await loadMenu();
+        } else {
+            throw new Error(result.error || 'Không thể thêm món');
         }
+    } catch (error) {
+        console.error('Error adding new menu item:', error);
+        showNotification('Lỗi', 'Lỗi thêm món mới: ' + error.message, 'error');
+    }
+}
+
 
         // Analytics functions
         async function loadAnalytics() {
@@ -2565,7 +2901,7 @@
                     filterOrdersByDate();
                 }
             }, 1000);
-        });
+        });        
     </script>
 </body>
 </html>
