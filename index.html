@@ -1453,7 +1453,246 @@
 .category-header[data-category*="ĂN VẶT"] {
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
 }
+.payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    padding: 20px;
+}
 
+.payment-modal.show {
+    display: flex;
+}
+
+.payment-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.payment-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.payment-method-btn {
+    flex: 1;
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.payment-method-btn:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.payment-method-btn.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.cash-payment-form {
+    display: none;
+    margin-top: 20px;
+}
+
+.cash-payment-form.show {
+    display: block;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.payment-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.payment-value {
+    font-weight: 700;
+    color: #e74c3c;
+    font-size: 1rem;
+}
+
+.discount-input {
+    width: 80px;
+    padding: 8px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    text-align: right;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.discount-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.final-amount {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border-left-color: #2ecc71;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-cancel-payment {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel-payment:hover {
+    border-color: #999;
+    color: #333;
+}
+
+.btn-confirm-payment {
+    flex: 2;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-confirm-payment:hover {
+    background: linear-gradient(135deg, #229954, #27ae60);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+/* Payment Status Labels */
+.payment-info {
+    background: #e8f4f8;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    border-left: 4px solid #3498db;
+}
+
+.payment-info-title {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.payment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+/* Updated Order Status Styles */
+.status-cho-thanh-toan {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-da-thanh-toan {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
 
 </style>
 </head>
@@ -2299,125 +2538,329 @@
             filterStats.textContent = message;
         }
 
-        function displayOrders(orders) {
-            const container = document.getElementById('ordersContent');
-            if (!orders || orders.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
-                return;
-            }
+// Payment Modal Variables
+let currentPaymentOrder = null;
+let selectedPaymentMethod = null;
 
-            orders.sort((a, b) => (b['Order ID'] || 0) - (a['Order ID'] || 0));
+	// ✅ Cập nhật function displayOrders để thay đổi logic buttons
+	function displayOrders(orders) {
+	    const container = document.getElementById('ordersContent');
+	    if (!orders || orders.length === 0) {
+		container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">Chưa có đơn hàng nào</p>';
+		return;
+	    }
 
-            let html = '<div class="orders-container">';
+	    orders.sort((a, b) => (b['Order ID'] || 0) - (a['Order ID'] || 0));
 
-            orders.forEach(order => {
-                const orderId = order['Order ID'] || '';
-                const time = order['Thời gian đặt'] || '';
-                const customer = order['Tên khách/Số bàn'] || '';
-                const items = order['Chi tiết món'] || '';
-                const total = order['Tổng tiền (K)'] || '';
-                const notes = order['Ghi chú'] || '';
-                const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
-                
-                let statusClass = 'status-cho';
-                let statusText = 'CHỜ';
-                
-                if (status.toLowerCase().includes('completed')) {
-                    statusClass = 'status-xong';
-                    statusText = 'XONG';
-                } else if (status.toLowerCase().includes('cancelled')) {
-                    statusClass = 'status-huy';
-                    statusText = 'HỦY';
-                }
+	    let html = '<div class="orders-container">';
 
-                const itemsArray = items.split(';\n').filter(item => item.trim());
+	    orders.forEach(order => {
+		const orderId = order['Order ID'] || '';
+		const time = order['Thời gian đặt'] || '';
+		const customer = order['Tên khách/Số bàn'] || '';
+		const items = order['Chi tiết món'] || '';
+		const total = order['Tổng tiền (K)'] || '';
+		const notes = order['Ghi chú'] || '';
+		const status = order['Trạng thái (Pending/Completed)'] || 'Pending';
+		const discount = order['Chiết khấu'] || '';
+		const paidAmount = order['Tiền trả'] || '';
+		const paymentMethod = order['Hình thức thanh toán'] || '';
+		
+		let statusClass = 'status-cho';
+		let statusText = 'CHỜ';
+		
+		if (status.toLowerCase().includes('completed')) {
+		    statusClass = 'status-xong';
+		    statusText = 'XONG';
+		} else if (status.toLowerCase().includes('cancelled')) {
+		    statusClass = 'status-huy';
+		    statusText = 'HỦY';
+		} else if (status.toLowerCase().includes('waiting_payment')) {
+		    statusClass = 'status-cho-thanh-toan';
+		    statusText = 'CHỜ THANH TOÁN';
+		} else if (status.toLowerCase().includes('paid')) {
+		    statusClass = 'status-da-thanh-toan';
+		    statusText = 'ĐÃ THANH TOÁN';
+		}
 
-                html += `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-time">${time}</div>
-                            <div class="customer-info">Khách: ${customer}</div>
-                        </div>
-                        <div class="order-content">
-                            <div class="order-items-title">Món:</div>
-                            <ul class="order-items-list">
-                `;
+		const itemsArray = items.split(';\n').filter(item => item.trim());
 
-                itemsArray.forEach(item => {
-                    const itemParts = item.split(' – ');
-                    if (itemParts.length >= 2) {
-                        const itemName = itemParts[0].trim();
-                        const itemPrice = itemParts[1].trim();
-                        html += `<li><span>– ${itemName}</span><span>${itemPrice}</span></li>`;
-                    } else {
-                        html += `<li><span>– ${item.trim()}</span></li>`;
-                    }
-                });
+		html += `
+		    <div class="order-card">
+		        <div class="order-header">
+		            <div class="order-time">${time}</div>
+		            <div class="customer-info">Khách: ${customer}</div>
+		        </div>
+		        <div class="order-content">
+		            <div class="order-items-title">Món:</div>
+		            <ul class="order-items-list">
+		`;
 
-                html += `
-                            </ul>
-                            ${notes ? `<div class="order-notes"><strong>Ghi chú:</strong> ${notes}</div>` : ''}
-                        </div>
-                        <div class="order-footer">
-                            <div class="order-total">Tổng: ${total}K</div>
-                            <div class="order-footer-right">
-                                <div class="order-status ${statusClass}">${statusText}</div>
-                                <div class="order-actions">
-                                    ${status !== 'Completed' ? `<button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Completed')">HOÀN THÀNH</button>` : ''}
-                                    ${status !== 'Cancelled' ? `<button class="btn btn-danger" onclick="updateOrderStatus('${orderId}', 'Cancelled')">HỦY</button>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
+		itemsArray.forEach(item => {
+		    const itemParts = item.split(' – ');
+		    if (itemParts.length >= 2) {
+		        const itemName = itemParts[0].trim();
+		        const itemPrice = itemParts[1].trim();
+		        html += `<li><span>– ${itemName}</span><span>${itemPrice}</span></li>`;
+		    } else {
+		        html += `<li><span>– ${item.trim()}</span></li>`;
+		    }
+		});
 
-            html += '</div>';
-            container.innerHTML = html;
-        }
+		html += `</ul>`;
+		
+		if (notes) {
+		    html += `<div class="order-notes"><strong>Ghi chú:</strong> ${notes}</div>`;
+		}
+		
+		// ✅ Hiển thị thông tin thanh toán nếu có
+		if (paymentMethod || discount || paidAmount) {
+		    html += `
+		        <div class="payment-info">
+		            <div class="payment-info-title">🏷️ Thông tin thanh toán</div>
+		            <div class="payment-details">
+		                ${paymentMethod ? `<div><strong>Hình thức:</strong> ${paymentMethod}</div>` : ''}
+		                ${discount ? `<div><strong>Chiết khấu:</strong> ${discount}K</div>` : ''}
+		                ${paidAmount ? `<div><strong>Số tiền trả:</strong> ${paidAmount}K</div>` : ''}
+		            </div>
+		        </div>
+		    `;
+		}
+		
+		html += `
+		        </div>
+		        <div class="order-footer">
+		            <div class="order-total">Tổng: ${total}K</div>
+		            <div class="order-footer-right">
+		                <div class="order-status ${statusClass}">${statusText}</div>
+		                <div class="order-actions">
+		`;
 
-        async function updateOrderStatus(orderId, newStatus) {
-            try {
-                const formData = new URLSearchParams();
-                let actionType = 'updateOrderStatus';
+		// ✅ Logic buttons mới
+		if (status === 'Pending') {
+		    html += `
+		        <button class="btn btn-success" onclick="updateOrderStatus('${orderId}', 'Waiting_Payment')">HOÀN THÀNH</button>
+		        <button class="btn btn-danger" onclick="deleteOrder('${orderId}')">XÓA</button>
+		    `;
+		} else if (status === 'Waiting_Payment') {
+		    html += `
+		        <button class="btn btn-primary" onclick="openPaymentModal('${orderId}', '${customer}', '${total}')">THANH TOÁN</button>
+		    `;
+		} else if (status === 'Paid') {
+		    html += `<span style="color: #27ae60; font-weight: 600;">✅ Đã hoàn tất</span>`;
+		}
 
-                if (newStatus === 'Cancelled') {
-                    if (!confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN đơn hàng #${orderId} không? Thao tác này không thể hoàn tác.`)) {
-                        return;
-                    }
-                    actionType = 'deleteOrder';
-                }
+		html += `
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		`;
+	    });
 
-                formData.append('action', actionType);
-                formData.append('orderId', orderId);
-                if (actionType === 'updateOrderStatus') {
-                    formData.append('status', newStatus);
-                }
+	    html += '</div>';
+	    container.innerHTML = html;
+	}
 
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: formData
-                });
-                const result = await response.json();
+	// ✅ Payment Modal Functions
+	function openPaymentModal(orderId, customerName, totalAmount) {
+	    currentPaymentOrder = {
+		id: orderId,
+		customer: customerName,
+		total: parseInt(totalAmount)
+	    };
+	    
+	    // Update modal content
+	    document.getElementById('paymentOrderSummary').innerHTML = `
+		<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+		    <div style="font-weight: 600; color: #2c3e50;">Đơn hàng #${orderId}</div>
+		    <div style="color: #666; font-size: 0.9rem;">Khách hàng: ${customerName}</div>
+		</div>
+	    `;
+	    
+	    document.getElementById('totalAmount').textContent = totalAmount + 'K';
+	    document.getElementById('finalAmount').textContent = totalAmount + 'K';
+	    document.getElementById('discountInput').value = '0';
+	    
+	    // Reset payment method selection
+	    selectedPaymentMethod = null;
+	    document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+	    document.getElementById('cashPaymentForm').classList.remove('show');
+	    
+	    // Show modal
+	    document.getElementById('paymentModal').classList.add('show');
+	}
 
-                if (result.success) {
-                    if (actionType === 'deleteOrder') {
-                        showNotification('Thành công', `Đã xóa đơn hàng #${orderId}`);
-                    } else {
-                        showNotification('Thành công', `Đã cập nhật trạng thái đơn hàng #${orderId}`);
-                    }
-                    await refreshData();
-                } else {
-                    throw new Error(result.error || 'Không thể thực hiện thao tác');
-                }
-            } catch (error) {
-                console.error('Lỗi khi xử lý đơn hàng:', error);
-                showNotification('Lỗi', error.message, 'error');
-            }
-        }
+	function closePaymentModal() {
+	    document.getElementById('paymentModal').classList.remove('show');
+	    currentPaymentOrder = null;
+	    selectedPaymentMethod = null;
+	}
+
+	function selectPaymentMethod(method) {
+	    selectedPaymentMethod = method;
+	    
+	    // Update UI
+	    document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+	    
+	    if (method === 'cash') {
+		document.getElementById('cashBtn').classList.add('selected');
+		document.getElementById('cashPaymentForm').classList.add('show');
+	    } else if (method === 'transfer') {
+		document.getElementById('transferBtn').classList.add('selected');
+		document.getElementById('cashPaymentForm').classList.remove('show');
+	    }
+	}
+
+	function calculateFinalAmount() {
+	    if (!currentPaymentOrder) return;
+	    
+	    const discount = parseInt(document.getElementById('discountInput').value) || 0;
+	    const finalAmount = Math.max(0, currentPaymentOrder.total - discount);
+	    
+	    document.getElementById('finalAmount').textContent = finalAmount + 'K';
+	}
+
+	async function confirmPayment() {
+	    if (!currentPaymentOrder || !selectedPaymentMethod) {
+		showNotification('Lỗi', 'Vui lòng chọn hình thức thanh toán!', 'error');
+		return;
+	    }
+	    
+	    let paymentData = {
+		orderId: currentPaymentOrder.id,
+		method: selectedPaymentMethod,
+		total: currentPaymentOrder.total,
+		discount: 0,
+		finalAmount: currentPaymentOrder.total
+	    };
+	    
+	    if (selectedPaymentMethod === 'cash') {
+		const discount = parseInt(document.getElementById('discountInput').value) || 0;
+		const finalAmount = Math.max(0, currentPaymentOrder.total - discount);
+		
+		paymentData.discount = discount;
+		paymentData.finalAmount = finalAmount;
+	    }
+	    
+	    try {
+		const formData = new URLSearchParams();
+		formData.append('action', 'processPayment');
+		formData.append('orderId', paymentData.orderId);
+		formData.append('paymentMethod', paymentData.method === 'cash' ? 'Tiền mặt' : 'Chuyển khoản');
+		formData.append('discount', paymentData.discount);
+		formData.append('paidAmount', paymentData.finalAmount);
+
+		const response = await fetch(SCRIPT_URL, {
+		    method: 'POST',
+		    headers: {
+		        'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+		    body: formData
+		});
+		
+		const result = await response.json();
+
+		if (result.success) {
+		    showNotification(
+		        'Thanh toán thành công!', 
+		        `Đơn #${paymentData.orderId} đã được thanh toán ${paymentData.method === 'cash' ? 'bằng tiền mặt' : 'bằng chuyển khoản'}`
+		    );
+		    
+		    closePaymentModal();
+		    await refreshData();
+		} else {
+		    throw new Error(result.error || 'Không thể xử lý thanh toán');
+		}
+	    } catch (error) {
+		console.error('Payment error:', error);
+		showNotification('Lỗi thanh toán', error.message, 'error');
+	    }
+	}
+
+	async function updateOrderStatus(orderId, newStatus) {
+	    try {
+		const formData = new URLSearchParams();
+		formData.append('action', 'updateOrderStatus');
+		formData.append('orderId', orderId);
+		formData.append('status', newStatus);
+
+		const response = await fetch(SCRIPT_URL, {
+		    method: 'POST',
+		    headers: {
+		        'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+		    body: formData
+		});
+		
+		const result = await response.json();
+
+		if (result.success) {
+		    let message = '';
+		    if (newStatus === 'Waiting_Payment') {
+		        message = `Đơn hàng #${orderId} đã hoàn thành và chờ thanh toán`;
+		    } else {
+		        message = `Đã cập nhật trạng thái đơn hàng #${orderId}`;
+		    }
+		    
+		    showNotification('Thành công', message);
+		    await refreshData();
+		} else {
+		    throw new Error(result.error || 'Không thể cập nhật trạng thái');
+		}
+	    } catch (error) {
+		console.error('Lỗi khi cập nhật đơn hàng:', error);
+		showNotification('Lỗi', error.message, 'error');
+	    }
+	}
+
+	// ✅ Thêm function deleteOrder (thay thế nút HỦY)
+	async function deleteOrder(orderId) {
+	    if (!confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN đơn hàng #${orderId} không?\nThao tác này không thể hoàn tác.`)) {
+		return;
+	    }
+	    
+	    try {
+		const formData = new URLSearchParams();
+		formData.append('action', 'deleteOrder');
+		formData.append('orderId', orderId);
+
+		const response = await fetch(SCRIPT_URL, {
+		    method: 'POST',
+		    headers: {
+		        'Content-Type': 'application/x-www-form-urlencoded',
+		    },
+		    body: formData
+		});
+		
+		const result = await response.json();
+
+		if (result.success) {
+		    showNotification('Thành công', `Đã xóa đơn hàng #${orderId}`);
+		    await refreshData();
+		} else {
+		    throw new Error(result.error || 'Không thể xóa đơn hàng');
+		}
+	    } catch (error) {
+		console.error('Lỗi khi xóa đơn hàng:', error);
+		showNotification('Lỗi', error.message, 'error');
+	    }
+	}
+
+	// ✅ Close modal khi click outside
+	document.addEventListener('click', function(e) {
+	    const modal = document.getElementById('paymentModal');
+	    if (e.target === modal) {
+		closePaymentModal();
+	    }
+	});
+
+	// ✅ Close modal với phím ESC
+	document.addEventListener('keydown', function(e) {
+	    if (e.key === 'Escape') {
+		closePaymentModal();
+	    }
+	});
 
         // ============= MENU AND ANALYTICS FUNCTIONS =============
 		async function loadMenu() {
@@ -3059,5 +3502,58 @@ async function addNewMenuItem() {
             }, 1000);
         });        
     </script>
+    <!-- Payment Modal -->
+<div class="payment-modal" id="paymentModal">
+    <div class="payment-content">
+        <div class="payment-header">
+            <div class="payment-title">💳 Thanh toán đơn hàng</div>
+            <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+        </div>
+        
+        <div class="order-summary" id="paymentOrderSummary">
+            <!-- Order details will be inserted here -->
+        </div>
+        
+        <div class="payment-methods">
+            <button class="payment-method-btn" id="cashBtn" onclick="selectPaymentMethod('cash')">
+                💵 Tiền mặt
+            </button>
+            <button class="payment-method-btn" id="transferBtn" onclick="selectPaymentMethod('transfer')">
+                🏦 Chuyển khoản
+            </button>
+        </div>
+        
+        <div class="cash-payment-form" id="cashPaymentForm">
+            <div class="payment-row">
+                <span class="payment-label">Tổng tiền:</span>
+                <span class="payment-value" id="totalAmount">0K</span>
+            </div>
+            
+            <div class="payment-row">
+                <span class="payment-label">Chiết khấu:</span>
+                <span class="payment-value">
+                    <input type="number" 
+                           id="discountInput" 
+                           class="discount-input" 
+                           value="0" 
+                           min="0" 
+                           placeholder="0"
+                           oninput="calculateFinalAmount()">K
+                </span>
+            </div>
+            
+            <div class="payment-row final-amount">
+                <span class="payment-label">Số tiền phải trả:</span>
+                <span class="payment-value" id="finalAmount">0K</span>
+            </div>
+        </div>
+        
+        <div class="payment-actions">
+            <button class="btn-cancel-payment" onclick="closePaymentModal()">Hủy</button>
+            <button class="btn-confirm-payment" onclick="confirmPayment()">Xác nhận thanh toán</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
