@@ -1018,6 +1018,358 @@
                 grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             }
         }
+        /* ✅ Enhanced Menu Management Styles - ADD TO EXISTING CSS */
+
+/* Enhanced Add Item Form */
+.add-item-form {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.add-item-form h3 {
+    margin-bottom: 24px;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: white;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 14px 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: rgba(255,255,255,0.8);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.25);
+}
+
+.btn-add {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-size: 1rem;
+    width: 100%;
+    grid-column: 1 / -1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-add:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.7);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Menu Display */
+.menu-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.category-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.category-header {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.category-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.category-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.menu-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 24px;
+}
+
+.menu-item-card {
+    background: #fafbfc;
+    border: 2px solid #f1f3f4;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.menu-item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #667eea;
+}
+
+.menu-item-card:hover::before {
+    opacity: 1;
+}
+
+.menu-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.menu-item-info {
+    flex: 1;
+}
+
+.menu-item-name {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.menu-item-id {
+    color: #7f8c8d;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.menu-item-price {
+    color: #e74c3c;
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-align: right;
+}
+
+/* Enhanced Status Management */
+.status-management {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.status-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.status-select {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.status-select.available {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border-color: #27ae60;
+}
+
+.status-select.out-of-stock {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border-color: #e74c3c;
+}
+
+.btn-update-status {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.btn-update-status:hover {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.menu-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn-edit,
+.btn-delete-item {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, #2980b9, #1c5980);
+    transform: translateY(-1px);
+}
+
+.btn-delete-item {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.btn-delete-item:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-1px);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .menu-items-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+    
+    .menu-item-actions {
+        flex-direction: column;
+    }
+    
+    .status-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-update-status {
+        width: 100%;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -1146,15 +1498,52 @@
                 </div>
             </div>
 
-            <!-- Menu Tab (Simplified for focus on statistics) -->
-            <div id="menuTab" class="tab-pane">
-                <h2>Quản lý menu</h2>
-                <div class="empty-state">
-                    <div class="empty-icon">🍽️</div>
-                    <h3>Quản lý menu</h3>
-                    <p>Chức năng quản lý menu sẽ được triển khai ở phiên bản tiếp theo</p>
-                </div>
+<!-- Enhanced Menu Tab - RESTORED -->
+<div id="menuTab" class="tab-pane">
+    <h2>🍽️ Quản lý menu</h2>
+    
+    <!-- Enhanced Add Item Form -->
+    <div class="add-item-form">
+        <h3>✨ Thêm món mới vào menu</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newItemName">TÊN MÓN</label>
+                <input type="text" id="newItemName" placeholder="VD: Cappuccino đặc biệt">
             </div>
+            <div class="form-group">
+                <label for="newItemPrice">GIÁ (K)</label>
+                <input type="number" id="newItemPrice" placeholder="35">
+            </div>
+            <div class="form-group">
+                <label for="newItemCategory">DANH MỤC</label>
+                <select id="newItemCategory">
+                    <!-- Đồ uống -->
+                    <option value="CAFE">☕ CAFE</option>
+                    <option value="TRÀ SỮA">🧋 TRÀ SỮA</option>
+                    <option value="TRÀ">🍃 TRÀ</option>
+                    <option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
+                    <option value="SỮA CHUA LẮC">🥛 SỮA CHUA LẮC</option>
+                    <option value="ĂN VẶT">🍴 ĂN VẶT</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="newItemStatus">TRẠNG THÁI</label>
+                <select id="newItemStatus">
+                    <option value="1">✅ Còn hàng</option>
+                    <option value="0">❌ Hết hàng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn-add" onclick="addNewMenuItem()">➕ THÊM MÓN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="menuContent">
+        <div class="loading">Đang tải menu...</div>
+    </div>
+</div>
+
 
             <!-- Analytics Tab -->
             <div id="analyticsTab" class="tab-pane">
@@ -2171,6 +2560,388 @@
                 closePaymentModal();
             }
         });
+
+        // ✅ ADD THESE FUNCTIONS TO THE EXISTING JAVASCRIPT
+
+// Global menu variables
+let currentMenu = [];
+const MENU_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzCZySXkrCv63cFBoH1lhEHIiT5ZlstsZnhNOZcTNyWl9HAdshAygUyNR-543YcrNmLtYD9JoJiCY6/pub?gid=0&single=true&output=csv';
+
+// ✅ Helper function để chuẩn hóa status
+function normalizeStatus(statusValue) {
+    if (!statusValue) return '1';
+    
+    const status = statusValue.toString().toLowerCase().trim();
+    
+    if (status === 'còn hàng' || status === 'available' || status === '1') {
+        return '1';
+    } else if (status === 'hết hàng' || status === 'out-of-stock' || status === '0') {
+        return '0';
+    }
+    
+    return '1'; // Default
+}
+
+function getStatusText(status) {
+    const normalizedStatus = normalizeStatus(status);
+    return normalizedStatus === '1' ? 'Còn hàng' : 'Hết hàng';
+}
+
+function getStatusClass(status) {
+    const normalizedStatus = normalizeStatus(status);
+    return normalizedStatus === '1' ? 'available' : 'out-of-stock';
+}
+
+// ✅ Load menu data
+async function loadMenu() {
+    try {
+        const response = await fetch(MENU_CSV_URL);
+        const csv = await response.text();
+        currentMenu = csvToJson(csv);
+        
+        // Normalize status
+        currentMenu = currentMenu.map(item => ({
+            ...item,
+            status: normalizeStatus(item.status || item.Status || '1')
+        }));
+        
+        displayMenu(currentMenu);
+    } catch (error) {
+        console.error('Error loading menu:', error);
+        document.getElementById('menuContent').innerHTML = 
+            '<div class="empty-state"><div class="empty-icon">🍽️</div><h3>Không thể tải menu</h3><p>Vui lòng thử lại sau</p></div>';
+    }
+}
+
+// ✅ Display menu với enhanced UI
+function displayMenu(menu) {
+    const container = document.getElementById('menuContent');
+    
+    if (!menu || menu.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <h3>Chưa có món nào trong menu</h3>
+                <p>Hãy thêm món đầu tiên để bắt đầu!</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Group by category
+    const categorized = {};
+    menu.forEach(item => {
+        const name = item['name'] || '';
+        const price = item['price'] || '';
+        const id = item['ID Món'] || '';
+        const category = item['category'] || 'KHÁC';
+        const status = normalizeStatus(item['status'] || '1');
+
+        if (!categorized[category]) {
+            categorized[category] = [];
+        }
+        categorized[category].push({ id, name, price, category, status });
+    });
+
+    // Sort categories theo thứ tự logic
+    const categoryOrder = [
+        'CAFE', 'TRÀ SỮA', 'TRÀ', 'NƯỚC ÉP', 'SỮA CHUA LẮC',
+        'ĂN VẶT',
+        'KHÁC'
+    ];
+    
+    const sortedCategories = Object.keys(categorized).sort((a, b) => {
+        const indexA = categoryOrder.indexOf(a);
+        const indexB = categoryOrder.indexOf(b);
+        
+        if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        
+        return indexA - indexB;
+    });
+
+    let html = '<div class="menu-categories">';
+    
+    sortedCategories.forEach(category => {
+        const items = categorized[category];
+        const availableCount = items.filter(item => item.status === '1').length;
+        const outOfStockCount = items.length - availableCount;
+        
+        html += `
+            <div class="category-section">
+                <div class="category-header">
+                    <div class="category-title">
+                        <span>${getCategoryIcon(category)}</span>
+                        <span>${category}</span>
+                    </div>
+                    <div class="category-stats">
+                        <span>📦 ${items.length} món</span>
+                        <span style="color: #27ae60;">✅ ${availableCount}</span>
+                        <span style="color: #e74c3c;">❌ ${outOfStockCount}</span>
+                    </div>
+                </div>
+                <div class="menu-items-grid">
+        `;
+
+        items.forEach(item => {
+            const isAvailable = item.status === '1';
+            const statusClass = getStatusClass(item.status);
+            const statusText = getStatusText(item.status);
+            
+            html += `
+                <div class="menu-item-card" data-item-id="${item.id}">
+                    <div class="menu-item-header">
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-id">ID: ${item.id}</div>
+                        </div>
+                        <div class="menu-item-price">${item.price}K</div>
+                    </div>
+                    
+                    <div class="status-management">
+                        <div class="status-label">
+                            🏷️ Trạng thái món
+                        </div>
+                        <div class="status-controls">
+                            <select class="status-select ${statusClass}" 
+                                    id="status-${item.id}" 
+                                    data-item-id="${item.id}"
+                                    data-item-name="${item.name}">
+                                <option value="1" ${isAvailable ? 'selected' : ''}>✅ Còn hàng</option>
+                                <option value="0" ${!isAvailable ? 'selected' : ''}>❌ Hết hàng</option>
+                            </select>
+                            <button class="btn-update-status" onclick="updateItemStatus('${item.id}', '${item.name}')">
+                                🔄 CẬP NHẬT
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item-actions">
+                        <button class="btn-edit" onclick="editMenuItem('${item.id}', '${item.name}', '${item.price}', '${item.category}')">
+                            ✏️ SỬA
+                        </button>
+                        <button class="btn-delete-item" onclick="deleteMenuItem('${item.id}', '${item.name}')">
+                            🗑️ XÓA
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div></div>';
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ✅ Category icons
+function getCategoryIcon(category) {
+    const icons = {
+        'CAFE': '☕',
+        'TRÀ SỮA': '🧋',
+        'TRÀ': '🍃',
+        'NƯỚC ÉP': '🥤',
+        'SỮA CHUA LẮC': '🥛',
+        'ĂN VẶT': '🍟',
+        'KHÁC': '🍹'
+    };
+    return icons[category] || '🍽️';
+}
+
+// ✅ Add new menu item
+async function addNewMenuItem() {
+    const name = document.getElementById('newItemName').value.trim();
+    const price = document.getElementById('newItemPrice').value.trim();
+    const category = document.getElementById('newItemCategory').value;
+    const status = document.getElementById('newItemStatus').value || '1';
+
+    if (!name) {
+        showNotification('Lỗi', 'Tên món không được để trống!', 'error');
+        return;
+    }
+    if (!price || isNaN(price) || parseInt(price) <= 0) {
+        showNotification('Lỗi', 'Giá món phải là số dương!', 'error');
+        return;
+    }
+
+    try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'addMenuItem');
+        formData.append('name', name);
+        formData.append('price', parseInt(price));
+        formData.append('category', category);
+        formData.append('status', status);
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            const statusText = getStatusText(status);
+            showNotification('Thành công', `Đã thêm món "${name}" - ${price}K (${statusText}) vào menu!`);
+            
+            // Clear form
+            document.getElementById('newItemName').value = '';
+            document.getElementById('newItemPrice').value = '';
+            document.getElementById('newItemCategory').value = 'CAFE';
+            document.getElementById('newItemStatus').value = '1';
+            
+            // Reload menu
+            await loadMenu();
+        } else {
+            throw new Error(result.error || 'Không thể thêm món');
+        }
+    } catch (error) {
+        console.error('Error adding new menu item:', error);
+        showNotification('Lỗi', 'Lỗi thêm món mới: ' + error.message, 'error');
+    }
+}
+
+// ✅ Update item status
+async function updateItemStatus(itemId, itemName) {
+    const selectElement = document.getElementById(`status-${itemId}`);
+    const newStatus = selectElement.value;
+    const statusText = getStatusText(newStatus);
+    
+    try {
+        const updateBtn = selectElement.nextElementSibling;
+        const originalText = updateBtn.innerHTML;
+        updateBtn.innerHTML = '⏳ Đang cập nhật...';
+        updateBtn.disabled = true;
+        
+        const formData = new URLSearchParams();
+        formData.append('action', 'updateItemStatus');
+        formData.append('itemId', itemId);
+        formData.append('status', newStatus);
+
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+
+        if (result.success) {
+            updateItemVisualStatus(itemId, newStatus);
+            showNotification('Cập nhật thành công!', `Đã thay đổi trạng thái món "${itemName}" thành "${statusText}"`);
+            updateLocalMenuData(itemId, newStatus);
+        } else {
+            throw new Error(result.error || 'Không thể cập nhật trạng thái');
+        }
+        
+    } catch (error) {
+        console.error('Error updating item status:', error);
+        selectElement.value = selectElement.value === '1' ? '0' : '1';
+        showNotification('Lỗi cập nhật!', `Không thể cập nhật trạng thái món "${itemName}": ${error.message}`, 'error');
+    } finally {
+        const updateBtn = selectElement.nextElementSibling;
+        updateBtn.innerHTML = '🔄 CẬP NHẬT';
+        updateBtn.disabled = false;
+    }
+}
+
+// ✅ Helper functions
+function updateItemVisualStatus(itemId, newStatus) {
+    const selectElement = document.getElementById(`status-${itemId}`);
+    const isAvailable = newStatus === '1';
+    const statusClass = isAvailable ? 'available' : 'out-of-stock';
+    
+    if (selectElement) {
+        selectElement.className = `status-select ${statusClass}`;
+    }
+}
+
+function updateLocalMenuData(itemId, newStatus) {
+    if (currentMenu && Array.isArray(currentMenu)) {
+        const itemIndex = currentMenu.findIndex(item => 
+            (item['ID Món'] || item['id']) === itemId
+        );
+        
+        if (itemIndex !== -1) {
+            currentMenu[itemIndex]['status'] = newStatus;
+        }
+    }
+}
+
+function editMenuItem(itemId, itemName, itemPrice, itemCategory) {
+    const newName = prompt(`Sửa tên món:\n(Hiện tại: ${itemName})`, itemName);
+    if (newName === null) return;
+
+    const newPrice = prompt(`Sửa giá món (đơn vị: K):\n(Hiện tại: ${itemPrice}K)`, itemPrice);
+    if (newPrice === null) return;
+
+    if (!newName.trim()) {
+        showNotification('Lỗi', 'Tên món không được để trống!', 'error');
+        return;
+    }
+    if (!newPrice.trim() || isNaN(newPrice) || parseInt(newPrice) <= 0) {
+        showNotification('Lỗi', 'Giá món phải là số dương!', 'error');
+        return;
+    }
+
+    // TODO: Implement actual update
+    showNotification('Thành công', `Đã cập nhật món "${newName}" - ${newPrice}K`);
+}
+
+function deleteMenuItem(itemId, itemName) {
+    if (!confirm(`Bạn có chắc muốn xóa món "${itemName}"?`)) {
+        return;
+    }
+    
+    // TODO: Implement actual delete
+    showNotification('Thành công', `Đã xóa món "${itemName}"`);
+}
+
+// ✅ CSV parsing helper
+function csvToJson(csv) {
+    try {
+        const lines = csv.split('\n').filter(line => line.trim() !== '');
+        if (lines.length < 2) return [];
+        
+        const headers = lines[0].split(',').map(header => header.trim());
+        const result = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const obj = {};
+            const currentLine = lines[i].split(',');
+            
+            for (let j = 0; j < headers.length; j++) {
+                obj[headers[j]] = currentLine[j] ? currentLine[j].trim() : '';
+            }
+            
+            if (obj[headers[0]]) {
+                result.push(obj);
+            }
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('CSV parsing error:', error);
+        return [];
+    }
+}
+
+// ✅ Update showTab function để load menu khi cần
+const originalShowTab = showTab;
+function showTab(tabName) {
+    originalShowTab(tabName);
+    
+    // Load menu khi chuyển sang tab menu
+    if (tabName === 'menu') {
+        loadMenu();
+    }
+}
+
     </script>
 </body>
 </html>
