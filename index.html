@@ -1419,6 +1419,41 @@
         font-size: 0.75rem;
     }
 }
+/* Suggestions dropdown styles */
+.suggestions-dropdown {
+    animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestion-item:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+    color: #667eea !important;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Enhanced form group for better suggestions positioning */
+.form-group {
+    position: relative;
+}
+
+/* Category-specific styling */
+.category-header[data-category*="ĂN VẶT"] {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
 
 </style>
 </head>
@@ -1552,26 +1587,28 @@
             <div id="menuTab" class="tab-pane">
                 <h2>Quản lý menu</h2>
                 
-		<!-- Enhanced Add Item Form -->
+		<!-- Enhanced Add Item Form với categories ăn vặt -->
 		<div class="add-item-form">
 		    <h3>✨ Thêm món mới vào menu</h3>
 		    <div class="form-row">
 			<div class="form-group">
 			    <label for="newItemName">TÊN MÓN</label>
-			    <input type="text" id="newItemName" placeholder="VD: Cappuccino đặc biệt">
+			    <input type="text" id="newItemName" placeholder="VD: Nem chua rán">
 			</div>
 			<div class="form-group">
 			    <label for="newItemPrice">GIÁ (K)</label>
-			    <input type="number" id="newItemPrice" placeholder="35">
+			    <input type="number" id="newItemPrice" placeholder="25">
 			</div>
 			<div class="form-group">
 			    <label for="newItemCategory">DANH MỤC</label>
 			    <select id="newItemCategory">
+				<!-- Đồ uống -->
 				<option value="CAFE">☕ CAFE</option>
-				<option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
-				<option value="TRÀ">🍃 TRÀ</option>
 				<option value="TRÀ SỮA">🧋 TRÀ SỮA</option>
+				<option value="TRÀ">🍃 TRÀ</option>
+				<option value="NƯỚC ÉP">🥤 NƯỚC ÉP</option>
 				<option value="SỮA CHUA LẮC">🥛 SỮA CHUA LẮC</option>
+				<option value="ĂN VẶT">🍴 ĂN VẶT</option>
 			    </select>
 			</div>
 			<div class="form-group">
@@ -1586,6 +1623,7 @@
 			</div>
 		    </div>
 		</div>
+
 
 		    <div id="menuContent">
 			<div class="loading">Đang tải menu...</div>
@@ -2429,6 +2467,7 @@
 		}
 
 
+// ✅ Cập nhật displayMenu để sort categories theo thứ tự logic
 function displayMenu(menu) {
     const container = document.getElementById('menuContent');
     
@@ -2449,8 +2488,6 @@ function displayMenu(menu) {
         const price = item['price'] || '';
         const id = item['ID Món'] || '';
         const category = item['category'] || 'KHÁC';
-        
-        // ✅ Chuẩn hóa status về format '1'/'0'
         const rawStatus = item['status'] || item['Status'] || '1';
         const status = normalizeStatus(rawStatus);
 
@@ -2460,16 +2497,34 @@ function displayMenu(menu) {
         categorized[category].push({ id, name, price, category, status });
     });
 
+    // ✅ Sort categories theo thứ tự logic: Đồ uống trước, Ăn vặt sau
+    const categoryOrder = [
+        'CAFE', 'TRÀ SỮA', 'TRÀ', 'NƯỚC ÉP', 'SỮA CHUA LẮC', 
+        'ĂN VẶT',
+        'KHÁC'
+    ];
+    
+    const sortedCategories = Object.keys(categorized).sort((a, b) => {
+        const indexA = categoryOrder.indexOf(a);
+        const indexB = categoryOrder.indexOf(b);
+        
+        if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        
+        return indexA - indexB;
+    });
+
     let html = '<div class="menu-categories">';
     
-    Object.keys(categorized).sort().forEach(category => {
+    sortedCategories.forEach(category => {
         const items = categorized[category];
         const availableCount = items.filter(item => item.status === '1').length;
         const outOfStockCount = items.length - availableCount;
         
         html += `
             <div class="category-section">
-                <div class="category-header">
+                <div class="category-header" data-category="${category}">
                     <div class="category-title">
                         <span class="category-icon">${getCategoryIcon(category)}</span>
                         <span>${category}</span>
@@ -2484,14 +2539,12 @@ function displayMenu(menu) {
         `;
 
         items.forEach(item => {
-            // ✅ Sử dụng status đã được normalize
             const isAvailable = item.status === '1';
             const statusClass = getStatusClass(item.status);
             const statusText = getStatusText(item.status);
             
             html += `
                 <div class="menu-item-card status-${statusClass}" data-item-id="${item.id}">
-                    <!-- Status Badge -->
                     <span class="status-badge ${statusClass}">${statusText}</span>
                     
                     <div class="menu-item-header">
@@ -2500,7 +2553,6 @@ function displayMenu(menu) {
                     </div>
                     <div class="menu-item-price">${item.price}K</div>
                     
-                    <!-- Status Management Section -->
                     <div class="status-management">
                         <div class="status-label">
                             🏷️ Trạng thái món
@@ -2537,6 +2589,7 @@ function displayMenu(menu) {
     html += '</div>';
     container.innerHTML = html;
 }
+
 
 
 // Update item status function
@@ -2646,17 +2699,120 @@ function updateLocalMenuData(itemId, newStatus) {
 }
 
 
-        function getCategoryIcon(category) {
-            const icons = {
-                'CAFE': '☕',
-                'NƯỚC ÉP': '🥤',
-                'TRÀ': '🍃',
-                'TRÀ SỮA': '🧋',
-                'SỮA CHUA LẮC': '🥛',
-                'KHÁC': '🍹'
-            };
-            return icons[category] || '🍹';
-        }
+	// ✅ Cập nhật function getCategoryIcon để bao gồm ăn vặt
+	function getCategoryIcon(category) {
+	    const icons = {
+		// Đồ uống
+		'CAFE': '☕',
+		'TRÀ SỮA': '🧋',
+		'TRÀ': '🍃',
+		'NƯỚC ÉP': '🥤',
+		'SỮA CHUA LẮC': '🥛',
+		'ĂN VẶT': '🍴',
+		
+		// Default
+		'KHÁC': '🍹'
+	    };
+	    return icons[category] || '🍽️';
+	}
+
+
+	// ✅ Thêm function để show suggestions khi chọn category
+	function showCategorySuggestions() {
+	    const categorySelect = document.getElementById('newItemCategory');
+	    const nameInput = document.getElementById('newItemName');
+	    
+	    categorySelect.addEventListener('change', function() {
+		const selectedCategory = this.value;
+		const suggestions = getItemSuggestions(selectedCategory);
+		
+		if (suggestions.length > 0) {
+		    // Update placeholder với suggestion đầu tiên
+		    nameInput.placeholder = `VD: ${suggestions[0]}`;
+		    
+		    // Có thể thêm dropdown suggestions nếu muốn
+		    showSuggestionsDropdown(suggestions, nameInput);
+		}
+	    });
+	}
+
+	// ✅ Function để hiển thị dropdown suggestions
+	function showSuggestionsDropdown(suggestions, inputElement) {
+	    // Remove existing dropdown
+	    const existingDropdown = document.querySelector('.suggestions-dropdown');
+	    if (existingDropdown) {
+		existingDropdown.remove();
+	    }
+	    
+	    // Create new dropdown
+	    const dropdown = document.createElement('div');
+	    dropdown.className = 'suggestions-dropdown';
+	    dropdown.style.cssText = `
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: white;
+		border: 2px solid rgba(255,255,255,0.3);
+		border-radius: 8px;
+		max-height: 150px;
+		overflow-y: auto;
+		z-index: 1000;
+		backdrop-filter: blur(10px);
+	    `;
+	    
+	    suggestions.slice(0, 5).forEach(suggestion => {
+		const item = document.createElement('div');
+		item.className = 'suggestion-item';
+		item.textContent = suggestion;
+		item.style.cssText = `
+		    padding: 8px 12px;
+		    cursor: pointer;
+		    border-bottom: 1px solid rgba(255,255,255,0.2);
+		    transition: background 0.2s ease;
+		    color: #333;
+		    font-size: 14px;
+		`;
+		
+		item.addEventListener('mouseenter', () => {
+		    item.style.background = 'rgba(255,255,255,0.3)';
+		});
+		
+		item.addEventListener('mouseleave', () => {
+		    item.style.background = 'transparent';
+		});
+		
+		item.addEventListener('click', () => {
+		    inputElement.value = suggestion;
+		    dropdown.remove();
+		    inputElement.focus();
+		});
+		
+		dropdown.appendChild(item);
+	    });
+	    
+	    // Position dropdown
+	    const formGroup = inputElement.closest('.form-group');
+	    formGroup.style.position = 'relative';
+	    formGroup.appendChild(dropdown);
+	    
+	    // Remove dropdown when clicking outside
+	    setTimeout(() => {
+		document.addEventListener('click', function closeDropdown(e) {
+		    if (!formGroup.contains(e.target)) {
+		        dropdown.remove();
+		        document.removeEventListener('click', closeDropdown);
+		    }
+		});
+	    }, 100);
+	}
+
+	// ✅ Initialize suggestions khi page load
+	document.addEventListener('DOMContentLoaded', function() {
+	    // ... existing code ...
+	    showCategorySuggestions();
+	});
+
 
         // Rest of the functions remain the same...
         function openEditDialog(id, name, price, category) {
