@@ -1094,7 +1094,7 @@
 
         .menu-items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 20px;
             padding: 24px;
         }
@@ -1245,16 +1245,17 @@
 	}
 
         /* ===================== NÚT HÀNH ĐỘNG MENU ===================== */
-        .menu-item-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
+	.menu-item-actions {
+	    display: flex;
+	    gap: 6px;
+	    justify-content: space-between; /* Căn đều 2 nút */
+	    margin-top: 8px;
         }
 
         .btn-edit,
         .btn-delete-item {
             flex: 1;
-            padding: 6px 10px;
+            padding: 6px 0;
             border: none;
             border-radius: 8px;
             font-weight: 600;
@@ -1263,7 +1264,9 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            font-size: 0.75;
+            font-size: 0.75rem;
+            white-space: nowrap; /* Tránh chữ xuống dòng */
+
         }
 
         .btn-edit {
@@ -1285,6 +1288,22 @@
             background: linear-gradient(135deg, #c0392b, #a93226);
             transform: translateY(-1px);
         }
+        
+        @media (max-width: 500px) {
+	    .menu-items-grid {
+		grid-template-columns: repeat(2, 1fr); /* Luôn 2 cột */
+		gap: 12px;
+	    }
+
+	    .menu-item-card {
+		padding: 6px;
+	    }
+
+	    .menu-item-price {
+		font-size: 1rem;
+		height: 50px;
+	    }
+	}
 
         /* ===================== BỎ STATUS MANAGEMENT SECTION ===================== */
         .status-management {
